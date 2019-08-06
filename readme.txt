@@ -80,3 +80,5 @@ check door总报错，注释掉：
 	gc_state.position_Cartesian[D_AXIS] = temp[D_AXIS];
 
 18、20190722修改了笛卡尔模式下的第三轴角度范围，扩大
+
+19、20190806重要更新：修改原版的thor主轴控制PWM输出方式，改回了grbl标准的输出方式，为了与标准的grbl激光雕刻主轴输出方式匹配，经测试，使用65值正好可以打开PWM开关

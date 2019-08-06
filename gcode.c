@@ -971,7 +971,13 @@ uint8_t gc_execute_line(char *line)
    if(gc_block.modal.spindle == SPINDLE_ENABLE_CCW)
    	{spindle_run_2(gc_block.modal.spindle, gc_state.spindle_speed_2);
     gc_state.modal.spindle = gc_block.modal.spindle;  } 
-  }
+   if(gc_block.modal.spindle == SPINDLE_DISABLE)
+   	{
+		spindle_run(gc_block.modal.spindle, gc_state.spindle_speed);
+		spindle_run_2(gc_block.modal.spindle, gc_state.spindle_speed_2);
+		gc_state.modal.spindle = gc_block.modal.spindle;
+   }
+ }
 #endif
   
 

@@ -183,7 +183,7 @@
 #ifdef VARIABLE_SPINDLE
   // Advanced Configuration Below You should not need to touch these variables
   // Set Timer up to use TIMER4B which is attached to Digital Pin 7
-  #define PWM_MAX_VALUE       255.0
+  #define PWM_MAX_VALUE       65535.0
   #define TCCRA_REGISTER		TCCR4A
   #define TCCRB_REGISTER		TCCR4B
   #define OCR_REGISTER		OCR4B//设置比较值
@@ -194,9 +194,9 @@
   #define WAVE2_REGISTER		WGM42
   #define WAVE3_REGISTER		WGM43
 
-  #define SPINDLE_PWM_DDR		DDRG
-  #define SPINDLE_PWM_PORT    PORTG
-  #define SPINDLE_PWM_BIT		0 // MEGA2560 Digital Pin 41
+  #define SPINDLE_PWM_DDR		DDRH
+  #define SPINDLE_PWM_PORT    PORTH
+  #define SPINDLE_PWM_BIT		4 // MEGA2560 Digital Pin 7
 #endif // End of VARIABLE_SPINDLE
 
 
@@ -208,7 +208,7 @@
 #define SPINDLE_PWM_PORT_2     PORTE
 #define SPINDLE_PWM_BIT_2      4 // MEGA2560 Digital Pin 2  OC3B输出PWM
 
-#define PWM_MAX_VALUE_2		255.0
+#define PWM_MAX_VALUE_2		65535.0
 #define TCCRA_REGISTER_2		  TCCR3A
 #define TCCRB_REGISTER_2		  TCCR3B
 #define OCR_REGISTER_2	  OCR3B//设置比较值

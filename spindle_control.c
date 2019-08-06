@@ -21,7 +21,7 @@
    Prescaler 1024 = 15625Hz / 256Steps =  61Hz	64碌s/step -> Values 15 / 32 for 1ms / 2ms
    Reload value = 0x07
    Replace this file in C:\Program Files (x86)\Arduino\libraries\GRBL
-*/
+   */
 
 
 #include "grbl.h"
@@ -69,22 +69,16 @@ void spindle_init_2()
 
 void spindle_stop()
 {     // On the Uno, spindle enable and PWM are shared. Other CPUs have seperate enable pin.
-       #ifdef RC_SERVO_INVERT
-          OCR_REGISTER = RC_SERVO_LONG;
-      #else
-          OCR_REGISTER = RC_SERVO_SHORT;
-      #endif
+  OCR_REGISTER = 0;
 }
 
 
 #ifdef VARIABLE_SPINDLE_2
 void spindle_stop_2()
 {     // On the Uno, spindle enable and PWM are shared. Other CPUs have seperate enable pin.
-       #ifdef RC_SERVO_INVERT
-          OCR_REGISTER_2 = RC_SERVO_LONG;
-      #else
-          OCR_REGISTER_2 = RC_SERVO_SHORT;
-      #endif
+  OCR_REGISTER_2 = 0;
+	
+   
 }
 #endif
 
@@ -104,42 +98,56 @@ void spindle_run(uint8_t direction, float rpm)
 
   } else {
 
-	#ifdef VARIABLE_SPINDLE
-
-      // TODO: Install the optional capability for frequency-based output for servos.
-      #define SPINDLE_RPM_RANGE (SPINDLE_MAX_RPM-SPINDLE_MIN_RPM)//主轴转速的范围
-      #define RC_SERVO_RANGE (RC_SERVO_LONG-RC_SERVO_SHORT)//舵机的范围
-
-
-        TCCRA_REGISTER = (1<<COMB_BIT)  | (1<<WGM40); //ESTO ESTA HARDCODEADO
-        //TCCR4A：COM4B1置1，WGM40置1,    0010 0001
-        TCCRB_REGISTER = (TCCRB_REGISTER & 0b11101000) | 0b00000101 | (1<<WGM42); // set to 1/1024 Prescaler //ESTO TAMBIEN, el wgm42 y el 0b00000101
-		//TCCR4B：xxx0 1101
-		uint8_t current_pwm;
-
-
-	   if ( rpm < SPINDLE_MIN_RPM ) { rpm = 0; }
-      else {
-        rpm -= SPINDLE_MIN_RPM;
-        if ( rpm > SPINDLE_RPM_RANGE ) { rpm = SPINDLE_RPM_RANGE; } // Prevent integer overflow
-      }
-
-      #ifdef RC_SERVO_INVERT
-          current_pwm = floor( RC_SERVO_LONG - rpm*(RC_SERVO_RANGE/SPINDLE_RPM_RANGE));
-          OCR_REGISTER = current_pwm;
-      #else
-         current_pwm = floor( rpm*(RC_SERVO_RANGE/SPINDLE_RPM_RANGE) + RC_SERVO_SHORT);
-          OCR_REGISTER = current_pwm;//这里的比较值从5到29.5来回切换，占空比从1.9到11.7
-      #endif
-	  #ifdef MINIMUM_SPINDLE_PWM
-        if (current_pwm < MINIMUM_SPINDLE_PWM) { current_pwm = MINIMUM_SPINDLE_PWM; }
-	     OCR_REGISTER = current_pwm;
-      #endif
-    #endif
+#ifdef VARIABLE_SPINDLE
+		// TODO: Install the optional capability for frequency-based output for servos.
+		// TODO：为舵机安装基于频率的输出的可选功能。
+  #ifdef CPU_MAP_ATMEGA2560
+		  TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);//TCCR4A:0010 0011
+		  TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02 | (1<<WAVE2_REGISTER) | (1<<WAVE3_REGISTER); 
+		  // set to 1/8 Prescaler
+		  //TCCR4A:0010 0011
+	  //  TCCR4B：xxx1 1010 ，8分频，快速PWM模式，TOP值是OCR4A,比较值仍然是OCR4B!,此时的TOP值为65535，
+	  //故而OCR4B可以从0到65535变化来调整占空比
+		  OCR4A = 0xFFFF; // set the top 16bit value计数的top值  决定了最大PWM是65535
+		  uint16_t current_pwm;
+  #else
+		  TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
+		  TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02; // set to 1/8 Prescaler
+		  uint8_t current_pwm;
+  #endif
+	  
+		if (rpm <= 0.0) { spindle_stop(); } // RPM should never be negative, but check anyway.
+		else {
+	#define SPINDLE_RPM_RANGE (SPINDLE_MAX_RPM-SPINDLE_MIN_RPM)//最大转速1000减去最小转速0
+		  if ( rpm < SPINDLE_MIN_RPM ) { rpm = 0; } 
+		  else { 
+			rpm -= SPINDLE_MIN_RPM; 
+			if ( rpm > SPINDLE_RPM_RANGE ) { rpm = SPINDLE_RPM_RANGE; } // Prevent integer overflow
+		  }
+		  current_pwm = floor( rpm*(PWM_MAX_VALUE/SPINDLE_RPM_RANGE) + 0.5);//有RPM转速换算出真实的PWM计数值，PWM最大计数为65535
+	#ifdef MINIMUM_SPINDLE_PWM
+			if (current_pwm < MINIMUM_SPINDLE_PWM) { current_pwm = MINIMUM_SPINDLE_PWM; }
+	#endif
+		  OCR_REGISTER = current_pwm; // Set PWM pin output  OCR4B寄存器，代表比较值
+	  
+		  // On the Uno, spindle enable and PWM are shared, unless otherwise specified.
+	#if defined(CPU_MAP_ATMEGA2560) || defined(USE_SPINDLE_DIR_AS_ENABLE_PIN) 
+	  #ifdef INVERT_SPINDLE_ENABLE_PIN
+			  SPINDLE_ENABLE_PORT &= ~(1<<SPINDLE_ENABLE_BIT);
+	  #else
+			  SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);
+	  #endif
+	#endif
+		}
+		
+#else
+		// NOTE: Without variable spindle, the enable bit should just turn on or off, regardless
+		// if the spindle speed value is zero, as its ignored anyhow.	   
+#endif
   }
 }
 
-#ifdef VARIABLE_SPINDLE_2
+
 void spindle_run_2(uint8_t direction, float rpm)
 {
   if (sys.state == STATE_CHECK_MODE) { return; }
@@ -161,28 +169,45 @@ void spindle_run_2(uint8_t direction, float rpm)
       #define RC_SERVO_RANGE_2 (RC_SERVO_LONG_2-RC_SERVO_SHORT_2)
 
 
-        TCCRA_REGISTER_2 = (1<<COMB_BIT_2)  | (1<<WGM30); //ESTO ESTA HARDCODEADO
-        TCCRB_REGISTER_2 = (TCCRB_REGISTER_2 & 0b11101000) | 0b00000101 | (1<<WGM32); // set to 1/1024 Prescaler //ESTO TAMBIEN, el wgm42 y el 0b00000101
-	    uint8_t current_pwm;
-
-
-	   if ( rpm < SPINDLE_MIN_RPM ) { rpm = 0; }
-      else {
-        rpm -= SPINDLE_MIN_RPM;
-        if ( rpm > SPINDLE_RPM_RANGE_2 ) { rpm = SPINDLE_RPM_RANGE_2; } // Prevent integer overflow
-      }
-
-      #ifdef RC_SERVO_INVERT
-          current_pwm = floor( RC_SERVO_LONG_2 - rpm*(RC_SERVO_RANGE_2/SPINDLE_RPM_RANGE_2));
-          OCR_REGISTER_2 = current_pwm;
-      #else
-         current_pwm = floor( rpm*(RC_SERVO_RANGE_2/SPINDLE_RPM_RANGE_2) + RC_SERVO_SHORT_2);
-          OCR_REGISTER_2 = current_pwm;
-      #endif
-	 // #ifdef MINIMUM_SPINDLE_PWM
-     //   if (current_pwm < MINIMUM_SPINDLE_PWM) { current_pwm = MINIMUM_SPINDLE_PWM; }
-	 //    OCR_REGISTER = current_pwm;
-     // #endif
+#ifdef VARIABLE_SPINDLE
+	// TODO: Install the optional capability for frequency-based output for servos.
+	// TODO：为舵机安装基于频率的输出的可选功能。
+  #ifdef CPU_MAP_ATMEGA2560
+	  TCCRA_REGISTER_2 = (1<<COMB_BIT_2) | (1<<WAVE1_REGISTER_2) | (1<<WAVE0_REGISTER_2);//TCCR4A:0010 0011
+	  TCCRB_REGISTER_2 = (TCCRB_REGISTER_2 & 0b11111000) | 0x02 | (1<<WAVE2_REGISTER_2) | (1<<WAVE3_REGISTER_2); 
+	  // set to 1/8 Prescaler
+	  //TCCR4A:0010 0011
+  //  TCCR4B：xxx1 1010 ，8分频，快速PWM模式，TOP值是OCR4A,比较值仍然是OCR4B!,此时的TOP值为65535，
+  //故而OCR4B可以从0到65535变化来调整占空比
+	  OCR3A = 0xFFFF; // set the top 16bit value计数的top值  决定了最大PWM是65535
+	  uint16_t current_pwm;
+  
+	if (rpm <= 0.0) { spindle_stop_2(); } // RPM should never be negative, but check anyway.
+	else {
+	#define SPINDLE_RPM_RANGE (SPINDLE_MAX_RPM-SPINDLE_MIN_RPM)//最大转速1000减去最小转速0
+	  if ( rpm < SPINDLE_MIN_RPM ) { rpm = 0; } 
+	  else { 
+		rpm -= SPINDLE_MIN_RPM; 
+		if ( rpm > SPINDLE_RPM_RANGE ) { rpm = SPINDLE_RPM_RANGE; } // Prevent integer overflow
+	  }
+	  current_pwm = floor( rpm*(PWM_MAX_VALUE_2/SPINDLE_RPM_RANGE) + 0.5);//有RPM转速换算出真实的PWM计数值，PWM最大计数为65535
+	#ifdef MINIMUM_SPINDLE_PWM
+		if (current_pwm < MINIMUM_SPINDLE_PWM) { current_pwm = MINIMUM_SPINDLE_PWM; }
+	#endif
+	  OCR_REGISTER_2 = current_pwm; // Set PWM pin output  OCR4B寄存器，代表比较值
+  
+	  // On the Uno, spindle enable and PWM are shared, unless otherwise specified.
+	}
+	
+#else
+	// NOTE: Without variable spindle, the enable bit should just turn on or off, regardless
+	// if the spindle speed value is zero, as its ignored anyhow.	   
+  #ifdef INVERT_SPINDLE_ENABLE_PIN
+	  SPINDLE_ENABLE_PORT &= ~(1<<SPINDLE_ENABLE_BIT);
+  #else
+	  SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);
+  #endif
+#endif
     
   }
 }
