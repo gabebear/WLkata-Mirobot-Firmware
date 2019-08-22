@@ -109,8 +109,8 @@ void protocol_main_loop()
     // seperate task to be shared by the g-code parser and Grbl's system commands.
     
     while(((c = serial_read()) != SERIAL_NO_DATA)||((c = serial2_read()) != SERIAL_NO_DATA)) {
-		serial_write(c);
-		serial2_write(c);
+		//serial_write(c);
+		//serial2_write(c);
       if ((c == '\n') || (c == '\r')) { // End of line reached
         line[char_counter] = 0; // Set string termination character.
         //printString_from_serial2(line);
@@ -130,7 +130,9 @@ void protocol_main_loop()
           } else if (c == '/') { 
             // Block delete NOT SUPPORTED. Ignore character.
             // NOTE: If supported, would simply need to check the system if block delete is enabled.
-          } else if (c == '(') {
+          } else if (c <= '\0') {
+            //\0去掉Ignore character.
+		  } else if (c == '(') {
             // Enable comments flag and ignore all characters until ')' or EOL.
             // NOTE: This doesn't follow the NIST definition exactly, but is good enough for now.
             // In the future, we could simply remove the items within the comments, but retain the
