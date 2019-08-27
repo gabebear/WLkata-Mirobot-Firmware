@@ -332,7 +332,7 @@ void protocol_execute_realtime()
           } else { // Otherwise, do nothing. Set and resume IDLE state.
             sys.state = STATE_IDLE;
 			//增加的复位运动以后归零操作
-			if(STATE_CYCLE == sys.state_last)
+			if((STATE_CYCLE == sys.state_last)&&(1 == settings.robot_qinnew.use_Back_to_text))
 			report_realtime_status();
 			if(sys.home_complate_flag == 1)
 				{

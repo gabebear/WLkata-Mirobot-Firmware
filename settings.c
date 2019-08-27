@@ -129,6 +129,7 @@ void settings_restore(uint8_t restore_flag) {
   settings.robot_qinnew.use_compensation = DEFAULTS_use_compensation;
   settings.robot_qinnew.compensation_num = DEFAULTS_compensation_num;
   settings.robot_qinnew.use_reset_pos = DEFAULTS_use_reset_pos;
+  settings.robot_qinnew.use_Back_to_text = DEFAULTS_use_Back_to_text;
 
 	write_global_settings();
   }
@@ -317,6 +318,7 @@ uint8_t settings_store_global_setting(uint8_t parameter, float value) {
 	  case 37: settings.robot_qinnew.use_compensation = int_value;break;
 	  case 38: settings.robot_qinnew.compensation_num = int_value;break;
 	  case 39: settings.robot_qinnew.use_reset_pos = int_value;break;
+	  case 40: settings.robot_qinnew.use_Back_to_text = int_value;break;
 	  
       default: 
         return(STATUS_INVALID_STATEMENT);

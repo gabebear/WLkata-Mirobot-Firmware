@@ -99,6 +99,7 @@
   #define DEFAULTS_use_compensation 0 
   #define DEFAULTS_compensation_num 2
   #define DEFAULTS_use_reset_pos 1
+  #define DEFAULTS_use_Back_to_text 1
 #endif
 
 
@@ -174,6 +175,7 @@
   #define DEFAULTS_use_compensation 0 
   #define DEFAULTS_compensation_num 2
   #define DEFAULTS_use_reset_pos 1	
+  #define DEFAULTS_use_Back_to_text 1
 
 
 

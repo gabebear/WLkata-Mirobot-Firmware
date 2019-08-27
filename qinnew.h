@@ -35,10 +35,11 @@ typedef struct {
   uint8_t compensation_num;//补偿的脉冲个数
 
   uint8_t use_reset_pos;//是否再运动复位后再运动到初始位置的距离
+  uint8_t use_Back_to_text;//是否在一条指令执行完后有回文
 } robot_t;
 
 
-#define QINNEW_VERSION "20190806"
+#define QINNEW_VERSION "20190827"
 
 
 #define _use_reset_pos_  //是否在复位以后运动复位的距离！！！

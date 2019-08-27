@@ -148,7 +148,8 @@ void report_feedback_message(uint8_t message_code)
 // Welcome message
 void report_init_message()
 {
-  printPgmString(PSTR("\r\nQinnew Robot " QINNEW_VERSION " based on Grbl " GRBL_VERSION " ['$' for help]\r\n"));
+  //printPgmString(PSTR("\r\nQinnew Robot " QINNEW_VERSION " based on Grbl " GRBL_VERSION " ['$' for help]\r\n"));
+  printPgmString(PSTR("\r\nGrbl " GRBL_VERSION " ['$' for help]\r\n"));
 }
 
 void report_robot_length_message()
@@ -285,7 +286,8 @@ void report_grbl_settings() {
 	printPgmString(PSTR(" (Number of interpolation)\r\n$37=")); print_uint8_base10(settings.robot_qinnew.use_compensation);
 	printPgmString(PSTR(" (Use compensation or not)\r\n$38=")); print_uint8_base10(settings.robot_qinnew.compensation_num);
 	printPgmString(PSTR(" (Number of compensation)\r\n$39=")); print_uint8_base10(settings.robot_qinnew.use_reset_pos);
-	printPgmString(PSTR(" (Use reset_pos or not)\r\n"));
+	printPgmString(PSTR(" (Use reset_pos or not)\r\n$40=")); print_uint8_base10(settings.robot_qinnew.use_Back_to_text);
+	printPgmString(PSTR(" (Use back to text or not)\r\n"));
   #endif
   
   // Print axis settings
