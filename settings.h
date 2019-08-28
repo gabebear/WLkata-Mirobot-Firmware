@@ -95,7 +95,6 @@ typedef struct {
   
   uint8_t flags;  // Contains default boolean settings
 
-
   uint8_t homing_pos_dir_mask;
   
   uint8_t homing_dir_mask;

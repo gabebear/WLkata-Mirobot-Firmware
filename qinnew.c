@@ -106,8 +106,8 @@ double conversion(double theta,double upperlimit,double lowerlimit)
   */
 void Inverse(double x_wrist,double y_wrist,double z_wrist,double alpha,double beta,double gama)
 {
- 		alpha = alpha * pi/180;     
- 		beta  = beta  * pi/180;
+ 	alpha = alpha * pi/180;     
+ 	beta  = beta  * pi/180;
   	gama  = gama  * pi/180;
     
     double  temp1 = cos(alpha);
@@ -516,12 +516,7 @@ void go_reset_pos()
 			}else
 				temp[idx] =  settings.Reset[idx];
 	}
-	//temp[A_AXIS] = settings.Reset[A_AXIS];
-	//temp[B_AXIS] = settings.Reset[B_AXIS];
-	//temp[C_AXIS] = settings.Reset[C_AXIS];
-	//temp[E_AXIS] = settings.Reset[E_AXIS];
-	//temp[F_AXIS] = settings.Reset[F_AXIS];
-	//temp[G_AXIS] = settings.Reset[G_AXIS];
+/*
 	printString("\r\nA_AXIS:");
 	printFloat(temp[A_AXIS],2);
 	printString("\r\nB_AXIS:");
@@ -547,7 +542,7 @@ void go_reset_pos()
 	printFloat(sys.position[F_AXIS],2);
 	printString("\r\nposition[G_AXIS]:");
 	printFloat(sys.position[G_AXIS],2);
-
+*/
 	
 	mc_line(temp, -1.0, false ,false);
 	sys.home_complate_flag = 1;

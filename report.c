@@ -175,6 +175,12 @@ void report_robot_length_message()
   printInteger(settings.robot_qinnew.D4);
   printString("\r\nL: ");
   printInteger(settings.robot_qinnew.L);
+  printString("\r\nX offset: ");
+  printInteger(settings.robot_qinnew.offset[E_AXIS]);
+  printString("\r\nY offset: ");
+  printInteger(settings.robot_qinnew.offset[F_AXIS]);
+  printString("\r\nZ offset: ");
+  printInteger(settings.robot_qinnew.offset[G_AXIS]);
 
   printString("\r\nInitialized Cartesian coordinates and rotation: ");
   printString("\r\nX: ");
@@ -287,7 +293,10 @@ void report_grbl_settings() {
 	printPgmString(PSTR(" (Use compensation or not)\r\n$38=")); print_uint8_base10(settings.robot_qinnew.compensation_num);
 	printPgmString(PSTR(" (Number of compensation)\r\n$39=")); print_uint8_base10(settings.robot_qinnew.use_reset_pos);
 	printPgmString(PSTR(" (Use reset_pos or not)\r\n$40=")); print_uint8_base10(settings.robot_qinnew.use_Back_to_text);
-	printPgmString(PSTR(" (Use back to text or not)\r\n"));
+	printPgmString(PSTR(" (Use back to text or not)\r\n$41=")); printFloat_SettingValue(settings.robot_qinnew.offset[E_AXIS]);
+	printPgmString(PSTR(" (X offset)\r\n$42=")); printFloat_SettingValue(settings.robot_qinnew.offset[F_AXIS]);
+	printPgmString(PSTR(" (Y offset)\r\n$43=")); printFloat_SettingValue(settings.robot_qinnew.offset[G_AXIS]);
+	printPgmString(PSTR(" (Z offset)\r\n"));
   #endif
   
   // Print axis settings

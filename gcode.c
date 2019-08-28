@@ -655,6 +655,8 @@ uint8_t gc_execute_line(char *line)
                 // Apply coordinate offsets based on distance mode.
                 if (gc_block.modal.distance == DISTANCE_MODE_ABSOLUTE) {	
 				//	printString("\r\n Absolute mode");
+					if(coordinate_mode == gc_state.coord_mode)
+						gc_block.values.xyz[idx] += settings.robot_qinnew.offset[idx];
                   gc_block.values.xyz[idx] += coordinate_data[idx] + gc_state.coord_offset[idx];
                   if (idx == TOOL_LENGTH_OFFSET_AXIS) { gc_block.values.xyz[idx] += gc_state.tool_length_offset; }
                 } else {  // Incremental mode

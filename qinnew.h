@@ -17,7 +17,7 @@
 
 #define minirobot
 
-#define Purple
+#define Laser
 
 typedef struct {
 
@@ -27,6 +27,8 @@ typedef struct {
   float A3;
   float D4;
   float L;
+
+  float offset[N_AXIS];
 
   uint8_t use_interpolation;//是否使用插补，0或1
   uint8_t interpolation_num;//插补的精细程度
@@ -39,7 +41,7 @@ typedef struct {
 } robot_t;
 
 
-#define QINNEW_VERSION "20190827"
+#define QINNEW_VERSION "20190828"
 
 
 #define _use_reset_pos_  //是否在复位以后运动复位的距离！！！

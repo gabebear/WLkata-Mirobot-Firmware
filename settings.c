@@ -131,6 +131,11 @@ void settings_restore(uint8_t restore_flag) {
   settings.robot_qinnew.use_reset_pos = DEFAULTS_use_reset_pos;
   settings.robot_qinnew.use_Back_to_text = DEFAULTS_use_Back_to_text;
 
+  memset(settings.robot_qinnew.offset,0,sizeof(settings.robot_qinnew.offset));
+  settings.robot_qinnew.offset[E_AXIS]  = DEFAULTS_offset_x;
+  settings.robot_qinnew.offset[F_AXIS]  = DEFAULTS_offset_y;
+  settings.robot_qinnew.offset[G_AXIS]  = DEFAULTS_offset_z;
+
 	write_global_settings();
   }
   
@@ -213,7 +218,7 @@ uint8_t read_global_settings() {
 
 // A helper method to set settings from command line
 uint8_t settings_store_global_setting(uint8_t parameter, float value) {
-  if ((value < 0.0)&&(parameter != 34)) { return(STATUS_NEGATIVE_VALUE); }//令$34输入L长度时可以为负值！ 
+  if ((value < 0.0)&&(parameter != 34)&&(parameter != 41)&&(parameter != 42)&&(parameter != 43)) { return(STATUS_NEGATIVE_VALUE); }//令$34输入L长度时可以为负值！ 
   if (parameter >= AXIS_SETTINGS_START_VAL) {//$100以后的指令在这里处理
     // Store axis configuration. Axis numbering sequence set by AXIS_SETTING defines.
     // NOTE: Ensure the setting index corresponds to the report.c settings printout.
@@ -319,6 +324,9 @@ uint8_t settings_store_global_setting(uint8_t parameter, float value) {
 	  case 38: settings.robot_qinnew.compensation_num = int_value;break;
 	  case 39: settings.robot_qinnew.use_reset_pos = int_value;break;
 	  case 40: settings.robot_qinnew.use_Back_to_text = int_value;break;
+	  case 41: settings.robot_qinnew.offset[E_AXIS] = value;break;
+	  case 42: settings.robot_qinnew.offset[F_AXIS] = value;break;
+	  case 43: settings.robot_qinnew.offset[G_AXIS] = value;break;
 	  
       default: 
         return(STATUS_INVALID_STATEMENT);
