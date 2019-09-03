@@ -250,6 +250,7 @@ uint8_t system_execute_line(char *line)
             if(!read_float(line, &char_counter, &value)) { return(STATUS_BAD_NUMBER_FORMAT); }
             if((line[char_counter] != 0) || (parameter > 255)) { return(STATUS_INVALID_STATEMENT); }
             return(settings_store_global_setting((uint8_t)parameter, value));
+			//parameter提出的是$141=100中的141，value提出的是其中的100
           }
       }    
   }

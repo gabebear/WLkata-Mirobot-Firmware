@@ -577,4 +577,28 @@ void coordinate_to_angle()
 
 }
 
+void start_calibration()//开始校准，清零原来复位参数
+{
+	settings_store_global_setting(140, 0);
+	settings_store_global_setting(141, 0);
+	settings_store_global_setting(144, 0);
+	settings_store_global_setting(145, 0);
+	settings_store_global_setting(146, 0);
+
+}
+
+void write_reset_distance()
+{
+	int32_t current_position[N_AXIS]; // Copy current state of the system position variable
+	memcpy(current_position,sys.position,sizeof(sys.position));
+	double print_position[N_AXIS];
+	system_convert_array_steps_to_mpos(print_position,current_position);
+	
+	settings_store_global_setting(140, fabs(print_position[A_AXIS]));//a
+	settings_store_global_setting(141, fabs(print_position[B_AXIS]));//b
+	settings_store_global_setting(144, fabs(print_position[E_AXIS]));//e
+	settings_store_global_setting(145, fabs(print_position[F_AXIS]));//f
+	settings_store_global_setting(146, fabs(print_position[G_AXIS]));//g
+
+}
 

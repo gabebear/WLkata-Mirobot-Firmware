@@ -345,6 +345,18 @@ uint8_t gc_execute_line(char *line)
 		 	gc_state.coord_mode = angle_mode;
 			coordinate_to_angle();
 		 	break;
+
+		 case 40://开始校准，清零原来复位参数
+		 	printString("M40: Start calibration, clear the original reset parameters.\r\n");
+			start_calibration();
+		 
+		 	break;
+
+		case 41://将校准得到的复位参数写入EEPROM中
+		 	printString("M41: Write the reset reset parameters to the EEPROM.\r\n");
+			write_reset_distance();
+		 
+		 	break;
 		 	
           default: FAIL(STATUS_GCODE_UNSUPPORTED_COMMAND); // [Unsupported M command]
         }
