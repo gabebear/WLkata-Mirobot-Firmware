@@ -254,7 +254,7 @@ void limits_go_home(uint8_t cycle_mask)
         } 
       }
 
-    } while (STEP_MASK & axislock);
+    } while (STEP_MASK_ALL & axislock);
 
     st_reset(); // Immediately force kill steppers and reset step segment buffer.
     plan_reset(); // Reset planner buffer to zero planner current position and to clear previous motions.

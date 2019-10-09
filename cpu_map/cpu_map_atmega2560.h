@@ -42,34 +42,65 @@
 //#define BLOCK_BUFFER_SIZE	36
 //#define LINE_BUFFER_SIZE	100
 
-#ifdef mini6_board
 // Define step pulse output pins. NOTE: All step bit pins must be on the same port.
-#define STEP_DDR      DDRA
-#define STEP_PORT     PORTA
-#define STEP_PIN      PINA
-#define A_STEP_BIT    6 // 
-#define B_STEP_BIT    5 // 
-#define C_STEP_BIT    3 // 
-#define D_STEP_BIT    0 // 
-#define E_STEP_BIT    4 // 
-#define F_STEP_BIT    2 // 
-#define G_STEP_BIT    1 // 
-#define STEP_MASK ((1<<A_STEP_BIT)|(1<<B_STEP_BIT)|(1<<C_STEP_BIT)|(1<<D_STEP_BIT)|(1<<E_STEP_BIT)|(1<<F_STEP_BIT)|(1<<G_STEP_BIT)) // All step bits
+#define STEP_DDR_A      DDRA
+#define STEP_PORT_A     PORTA
+#define STEP_PIN_A      PINA
+
+#define STEP_DDR_B      DDRC
+#define STEP_PORT_B     PORTC
+#define STEP_PIN_B      PINC
+
+#define A_STEP0         1
+#define A_STEP1         3
+#define A_STEP2         5
+#define A_STEP3         7
+#define STEP_MASK_A     ((1<<A_STEP0)|(1<<A_STEP1)|(1<<A_STEP2)|(1<<A_STEP3)) // GropA step bits
+
+
+#define B_STEP0         2
+#define B_STEP1         4
+#define B_STEP2         6
+#define STEP_MASK_B     ((1<<B_STEP0)|(1<<B_STEP1)|(1<<B_STEP2)) // GropB step bits
+
+#define X_STEP_BIT_T      A_STEP0
+#define Y_STEP_BIT_T      A_STEP1
+#define Z_STEP_BIT_T      A_STEP2
+#define A_STEP_BIT_T      B_STEP0
+#define B_STEP_BIT_T      B_STEP1
+#define C_STEP_BIT_T      B_STEP2
+#define D_STEP_BIT_T      A_STEP3
+#define STEP_MASK_ALL ((1<<X_STEP_BIT_T)|(1<<Y_STEP_BIT_T)|(1<<Z_STEP_BIT_T)|(1<<A_STEP_BIT_T)|(1<<B_STEP_BIT_T)|(1<<C_STEP_BIT_T)|(1<<D_STEP_BIT_T)) // All step bits
+
 
 // Define step direction output pins. NOTE: All direction pins must be on the same port.
-#define DIRECTION_DDR     DDRC
-#define DIRECTION_PORT    PORTC
-#define DIRECTION_PIN     PINC
-#define A_DIRECTION_BIT   1 // 
-#define B_DIRECTION_BIT   2 // 
-#define C_DIRECTION_BIT   4 // 
-#define D_DIRECTION_BIT   7 // 
-#define E_DIRECTION_BIT   3 // 
-#define F_DIRECTION_BIT   5 // 
-#define G_DIRECTION_BIT   6 // 
-#define DIRECTION_MASK ((1<<A_DIRECTION_BIT)|(1<<B_DIRECTION_BIT)|(1<<C_DIRECTION_BIT)|(1<<D_DIRECTION_BIT)|(1<<E_DIRECTION_BIT)|(1<<F_DIRECTION_BIT)|(1<<G_DIRECTION_BIT)) // All direction bits
+#define DIR_DDR_A     DDRA
+#define DIR_PORT_A    PORTA
+#define DIR_PIN_A     PINA
 
-#endif
+#define DIR_DDR_B     DDRC
+#define DIR_PORT_B    PORTC
+#define DIR_PIN_B     PINC
+
+#define A_DIR0        0
+#define A_DIR1        2
+#define A_DIR2        4
+#define A_DIR3        6
+#define DIR_MASK_A    ((1<<A_DIR0)|(1<<A_DIR1)|(1<<A_DIR2)|(1<<A_DIR3))
+
+#define B_DIR0        1
+#define B_DIR1        3
+#define B_DIR2        5
+#define DIR_MASK_B    ((1<<B_DIR0)|(1<<B_DIR1)|(1<<B_DIR2))
+
+#define X_DIR_BIT   A_DIR0
+#define Y_DIR_BIT   A_DIR1 
+#define Z_DIR_BIT   A_DIR2 
+#define A_DIR_BIT   B_DIR0 
+#define B_DIR_BIT   B_DIR1 
+#define C_DIR_BIT   B_DIR2 
+#define D_DIR_BIT   A_DIR3 
+#define DIRECTION_MASK_ALL ((1<<X_DIR_BIT)|(1<<Y_DIR_BIT)|(1<<Z_DIR_BIT)|(1<<A_DIR_BIT)|(1<<B_DIR_BIT)|(1<<C_DIR_BIT)|(1<<D_DIR_BIT)) // All direction bits
 
 // Define stepper driver enable/disable output pin.
 #define STEPPERS_DISABLE_DDR   DDRG
@@ -77,49 +108,20 @@
 #define STEPPERS_DISABLE_BIT   1 // MEGA2560 Digital Pin 40
 #define STEPPERS_DISABLE_MASK (1<<STEPPERS_DISABLE_BIT)
 
-#ifdef thor_board
-// Define step pulse output pins. NOTE: All step bit pins must be on the same port.
-#define STEP_DDR      DDRA
-#define STEP_PORT     PORTA
-#define STEP_PIN      PINA
-#define A_STEP_BIT    6 // MEGA2560 Digital Pin 28
-#define B_STEP_BIT    4 // MEGA2560 Digital Pin 26
-#define C_STEP_BIT    2 // MEGA2560 Digital Pin 24
-#define D_STEP_BIT    0 // MEGA2560 Digital Pin 22
-#define E_STEP_BIT    1 // MEGA2560 Digital Pin 23
-#define F_STEP_BIT    3 // MEGA2560 Digital Pin 25
-#define G_STEP_BIT    5 // MEGA2560 Digital Pin 27
-#define STEP_MASK ((1<<A_STEP_BIT)|(1<<B_STEP_BIT)|(1<<C_STEP_BIT)|(1<<D_STEP_BIT)|(1<<E_STEP_BIT)|(1<<F_STEP_BIT)|(1<<G_STEP_BIT)) // All step bits
-
-// Define step direction output pins. NOTE: All direction pins must be on the same port.
-#define DIRECTION_DDR     DDRC
-#define DIRECTION_PORT    PORTC
-#define DIRECTION_PIN     PINC
-#define A_DIRECTION_BIT   1 // MEGA2560 Digital Pin 36
-#define B_DIRECTION_BIT   3 // MEGA2560 Digital Pin 34
-#define C_DIRECTION_BIT   5 // MEGA2560 Digital Pin 32
-#define D_DIRECTION_BIT   7 // MEGA2560 Digital Pin 30
-#define E_DIRECTION_BIT   6 // MEGA2560 Digital Pin 31
-#define F_DIRECTION_BIT   4 // MEGA2560 Digital Pin 33
-#define G_DIRECTION_BIT   2 // MEGA2560 Digital Pin 35
-#define DIRECTION_MASK ((1<<A_DIRECTION_BIT)|(1<<B_DIRECTION_BIT)|(1<<C_DIRECTION_BIT)|(1<<D_DIRECTION_BIT)|(1<<E_DIRECTION_BIT)|(1<<F_DIRECTION_BIT)|(1<<G_DIRECTION_BIT)) // All direction bits
-
-#endif
-
 // Define homing/hard limit switch input pins and limit interrupt vectors.
 // NOTE: All limit bit pins must be on the same port
-#define LIMIT_DDR       DDRL
+#define LIMIT_DDR       DDRD
 
-#define LIMIT_PORT      PORTL
-#define LIMIT_PIN       PINL
+#define LIMIT_PORT      PORTD
+#define LIMIT_PIN       PIND
 
 
-#define A_LIMIT_BIT     3 // SOPTO4//第二版电路图
-#define B_LIMIT_BIT     2 // SOPTO5
-#define C_LIMIT_BIT     0 // SOPTO6
-#define D_LIMIT_BIT     1 // 未用
-#define E_LIMIT_BIT     7 // SOPTO1
-#define F_LIMIT_BIT     5 // SOPTO2
+#define A_LIMIT_BIT     5 // SOPTO4//第二版电路图
+#define B_LIMIT_BIT     6 // SOPTO5
+#define C_LIMIT_BIT     7 // SOPTO6
+#define D_LIMIT_BIT     2 // 未用
+#define E_LIMIT_BIT     0 // SOPTO1
+#define F_LIMIT_BIT     1 // SOPTO2
 #define G_LIMIT_BIT     4 // SOPTO3
 
 /*
@@ -194,9 +196,9 @@
   #define WAVE2_REGISTER		WGM42
   #define WAVE3_REGISTER		WGM43
 
-  #define SPINDLE_PWM_DDR		DDRH
-  #define SPINDLE_PWM_PORT    PORTH
-  #define SPINDLE_PWM_BIT		4 // MEGA2560 Digital Pin 7
+  #define SPINDLE_PWM_DDR		DDRG
+  #define SPINDLE_PWM_PORT    PORTG
+  #define SPINDLE_PWM_BIT		0 // MEGA2560 Digital Pin 41
 #endif // End of VARIABLE_SPINDLE
 
 

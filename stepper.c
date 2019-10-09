@@ -291,15 +291,19 @@ ISR(TIMER1_COMPA_vect)
   if (busy) { return; } // The busy-flag is used to avoid reentering this interrupt
   
   // Set the direction pins a couple of nanoseconds before we step the steppers
-  DIRECTION_PORT = (DIRECTION_PORT & ~DIRECTION_MASK) | (st.dir_outbits & DIRECTION_MASK);
+  //DIRECTION_PORT = (DIRECTION_PORT & ~DIRECTION_MASK) | (st.dir_outbits & DIRECTION_MASK);
+  DIR_PORT_A = (DIR_PORT_A & ~DIR_MASK_A) | (st.dir_outbits & DIR_MASK_A);
+  DIR_PORT_B = (DIR_PORT_B & ~DIR_MASK_B) | (st.dir_outbits & DIR_MASK_B);
 
   // Then pulse the stepping pins
   #ifdef STEP_PULSE_DELAY
-    st.step_bits = (STEP_PORT & ~STEP_MASK) | st.step_outbits; // Store out_bits to prevent overwriting.
+    //st.step_bits = (STEP_PORT & ~STEP_MASK) | st.step_outbits; // Store out_bits to prevent overwriting.
+    st.step_bits = ((STEP_PORT_A & ~STEP_MASK_A)&(STEP_PORT_B & ~STEP_MASK_B)) | st.step_outbits; // Store out_bits to prevent overwriting.
   #else  // Normal operation
-    STEP_PORT = (STEP_PORT & ~STEP_MASK) | st.step_outbits;
-  //  print_uint8_base2(st.step_outbits);//printString("\r\n");
-  // serial_write('1');
+    //STEP_PORT = (STEP_PORT & ~STEP_MASK) | st.step_outbits;
+    STEP_PORT_A = (STEP_PORT_A & ~STEP_MASK_A) | (st.step_outbits & STEP_MASK_A);
+    STEP_PORT_B = (STEP_PORT_B & ~STEP_MASK_B) | (st.step_outbits & STEP_MASK_B);
+    // 重点注意
   #endif  
 
   // Enable step pulse reset timer so that The Stepper Port Reset Interrupt can reset the signal after
@@ -370,9 +374,9 @@ ISR(TIMER1_COMPA_vect)
     st.counter_a += st.exec_block->steps[A_AXIS];
   #endif  
   if (st.counter_a > st.exec_block->step_event_count) {
-    st.step_outbits |= (1<<A_STEP_BIT);
+    st.step_outbits |= (1<<A_STEP_BIT_T);
     st.counter_a -= st.exec_block->step_event_count;
-    if (st.exec_block->direction_bits & (1<<A_DIRECTION_BIT)) { sys.position[A_AXIS]--; }
+    if (st.exec_block->direction_bits & (1<<A_DIR_BIT)) { sys.position[A_AXIS]--; }
     else { sys.position[A_AXIS]++; }
   }
   #ifdef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
@@ -381,9 +385,9 @@ ISR(TIMER1_COMPA_vect)
     st.counter_b += st.exec_block->steps[B_AXIS];
   #endif    
   if (st.counter_b > st.exec_block->step_event_count) {
-    st.step_outbits |= (1<<B_STEP_BIT);
+    st.step_outbits |= (1<<B_STEP_BIT_T);
     st.counter_b -= st.exec_block->step_event_count;
-    if (st.exec_block->direction_bits & (1<<B_DIRECTION_BIT)) { sys.position[B_AXIS]--; }
+    if (st.exec_block->direction_bits & (1<<B_DIR_BIT)) { sys.position[B_AXIS]--; }
     else { sys.position[B_AXIS]++; }
   }
   #ifdef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
@@ -392,9 +396,9 @@ ISR(TIMER1_COMPA_vect)
     st.counter_c += st.exec_block->steps[C_AXIS];
   #endif  
   if (st.counter_c > st.exec_block->step_event_count) {
-    st.step_outbits |= (1<<C_STEP_BIT);
+    st.step_outbits |= (1<<C_STEP_BIT_T);
     st.counter_c -= st.exec_block->step_event_count;
-    if (st.exec_block->direction_bits & (1<<C_DIRECTION_BIT)) { sys.position[C_AXIS]--; }
+    if (st.exec_block->direction_bits & (1<<C_DIR_BIT)) { sys.position[C_AXIS]--; }
     else { sys.position[C_AXIS]++; }
   }  
   #ifdef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
@@ -403,9 +407,9 @@ ISR(TIMER1_COMPA_vect)
     st.counter_d += st.exec_block->steps[D_AXIS];
   #endif  
   if (st.counter_d > st.exec_block->step_event_count) {
-    st.step_outbits |= (1<<D_STEP_BIT);
+    st.step_outbits |= (1<<D_STEP_BIT_T);
     st.counter_d -= st.exec_block->step_event_count;
-    if (st.exec_block->direction_bits & (1<<D_DIRECTION_BIT)) { sys.position[D_AXIS]--; }
+    if (st.exec_block->direction_bits & (1<<D_DIR_BIT)) { sys.position[D_AXIS]--; }
     else { sys.position[D_AXIS]++; }
   } 
   #ifdef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
@@ -414,9 +418,9 @@ ISR(TIMER1_COMPA_vect)
     st.counter_e += st.exec_block->steps[E_AXIS];
   #endif  
   if (st.counter_e > st.exec_block->step_event_count) {
-    st.step_outbits |= (1<<E_STEP_BIT);
+    st.step_outbits |= (1<<X_STEP_BIT_T);
     st.counter_e -= st.exec_block->step_event_count;
-    if (st.exec_block->direction_bits & (1<<E_DIRECTION_BIT)) { sys.position[E_AXIS]--; }
+    if (st.exec_block->direction_bits & (1<<X_DIR_BIT)) { sys.position[E_AXIS]--; }
     else { sys.position[E_AXIS]++; }
   } 
   #ifdef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
@@ -425,9 +429,9 @@ ISR(TIMER1_COMPA_vect)
     st.counter_f += st.exec_block->steps[F_AXIS];
   #endif  
   if (st.counter_f > st.exec_block->step_event_count) {
-    st.step_outbits |= (1<<F_STEP_BIT);
+    st.step_outbits |= (1<<Y_STEP_BIT_T);
     st.counter_f -= st.exec_block->step_event_count;
-    if (st.exec_block->direction_bits & (1<<F_DIRECTION_BIT)) { sys.position[F_AXIS]--; }
+    if (st.exec_block->direction_bits & (1<<Y_DIR_BIT)) { sys.position[F_AXIS]--; }
     else { sys.position[F_AXIS]++; }
   } 
   #ifdef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
@@ -436,9 +440,9 @@ ISR(TIMER1_COMPA_vect)
     st.counter_g += st.exec_block->steps[G_AXIS];
   #endif  
   if (st.counter_g > st.exec_block->step_event_count) {
-    st.step_outbits |= (1<<G_STEP_BIT);
+    st.step_outbits |= (1<<Z_STEP_BIT_T);
     st.counter_g -= st.exec_block->step_event_count;
-    if (st.exec_block->direction_bits & (1<<G_DIRECTION_BIT)) { sys.position[G_AXIS]--; }
+    if (st.exec_block->direction_bits & (1<<Z_DIR_BIT)) { sys.position[G_AXIS]--; }
     else { sys.position[G_AXIS]++; }
   } 
   // During a homing cycle, lock out and prevent desired axes from moving.
@@ -472,7 +476,10 @@ ISR(TIMER1_COMPA_vect)
 ISR(TIMER0_OVF_vect)
 {
   // Reset stepping pins (leave the direction pins)
-  STEP_PORT = (STEP_PORT & ~STEP_MASK) | (step_port_invert_mask & STEP_MASK); 
+  //STEP_PORT = (STEP_PORT & ~STEP_MASK) | (step_port_invert_mask & STEP_MASK); 
+  
+  STEP_PORT_A = (STEP_PORT_A & ~STEP_MASK_A) | (step_port_invert_mask & STEP_MASK_A); 
+  STEP_PORT_B = (STEP_PORT_B & ~STEP_MASK_B) | (step_port_invert_mask & STEP_MASK_B); 
   TCCR0B = 0; // Disable Timer0 to prevent re-entering this interrupt when it's not needed. 
 }
 #ifdef STEP_PULSE_DELAY
@@ -481,10 +488,13 @@ ISR(TIMER0_OVF_vect)
   // will then trigger after the appropriate settings.pulse_microseconds, as in normal operation.
   // The new timing between direction, step pulse, and step complete events are setup in the
   // st_wake_up() routine.
+  /*
   ISR(TIMER0_COMPA_vect) 
   { 
-    STEP_PORT = st.step_bits; // Begin step pulse.
+    STEP_PORT = st.step_bits; // Begin step pulse. 
+    // 重点注意
   }
+  */
 #endif
 
 
@@ -520,8 +530,13 @@ void st_reset()
   st_generate_step_dir_invert_masks();
       
   // Initialize step and direction port pins.
-  STEP_PORT = (STEP_PORT & ~STEP_MASK) | step_port_invert_mask;
-  DIRECTION_PORT = (DIRECTION_PORT & ~DIRECTION_MASK) | dir_port_invert_mask;
+  //STEP_PORT = (STEP_PORT & ~STEP_MASK) | step_port_invert_mask;
+  STEP_PORT_A = (STEP_PORT_A & ~STEP_MASK_A) | (step_port_invert_mask & STEP_MASK_A);
+  STEP_PORT_B = (STEP_PORT_B & ~STEP_MASK_B) | (step_port_invert_mask & STEP_MASK_B);
+  
+  //DIRECTION_PORT = (DIRECTION_PORT & ~DIRECTION_MASK) | dir_port_invert_mask;
+  DIR_PORT_A = (DIR_PORT_A & ~DIR_MASK_A) | (dir_port_invert_mask & DIR_MASK_A);
+  DIR_PORT_B = (DIR_PORT_B & ~DIR_MASK_B) | (dir_port_invert_mask & DIR_MASK_B);
 }
 
 
@@ -529,9 +544,12 @@ void st_reset()
 void stepper_init()
 {
   // Configure step and direction interface pins
-  STEP_DDR |= STEP_MASK;
+  STEP_DDR_A |= STEP_MASK_A;
+  STEP_DDR_B |= STEP_MASK_B;
   STEPPERS_DISABLE_DDR |= 1<<STEPPERS_DISABLE_BIT;
-  DIRECTION_DDR |= DIRECTION_MASK;
+  //DIRECTION_DDR |= DIRECTION_MASK;
+  DIR_DDR_A |= DIR_MASK_A;
+  DIR_DDR_B |= DIR_MASK_B;
 
   // Configure Timer 1: Stepper Driver Interrupt
   TCCR1B &= ~(1<<WGM13); // waveform generation = 0100 = CTC

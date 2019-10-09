@@ -362,26 +362,26 @@ void settings_init() {
 // Returns step pin mask according to Grbl internal axis indexing.
 uint8_t get_step_pin_mask(uint8_t axis_idx)
 {
-  if ( axis_idx == A_AXIS ) { return((1<<A_STEP_BIT)); }
-  if ( axis_idx == B_AXIS ) { return((1<<B_STEP_BIT)); }
-  if ( axis_idx == C_AXIS ) { return((1<<C_STEP_BIT)); }
-  if ( axis_idx == D_AXIS ) { return((1<<D_STEP_BIT)); }
-  if ( axis_idx == E_AXIS ) { return((1<<E_STEP_BIT)); }
-  if ( axis_idx == F_AXIS ) { return((1<<F_STEP_BIT)); }
-  return((1<<G_STEP_BIT));
+  if ( axis_idx == A_AXIS ) { return((1<<A_STEP_BIT_T)); }
+  if ( axis_idx == B_AXIS ) { return((1<<B_STEP_BIT_T)); }
+  if ( axis_idx == C_AXIS ) { return((1<<C_STEP_BIT_T)); }
+  if ( axis_idx == D_AXIS ) { return((1<<D_STEP_BIT_T)); }
+  if ( axis_idx == E_AXIS ) { return((1<<X_STEP_BIT_T)); }
+  if ( axis_idx == F_AXIS ) { return((1<<Y_STEP_BIT_T)); }
+  return((1<<Z_STEP_BIT_T));
 }
 
 
 // Returns direction pin mask according to Grbl internal axis indexing.
 uint8_t get_direction_pin_mask(uint8_t axis_idx)
 {
-  if ( axis_idx == A_AXIS ) { return((1<<A_DIRECTION_BIT)); }
-  if ( axis_idx == B_AXIS ) { return((1<<B_DIRECTION_BIT)); }
-  if ( axis_idx == C_AXIS ) { return((1<<C_DIRECTION_BIT)); }
-  if ( axis_idx == D_AXIS ) { return((1<<D_DIRECTION_BIT)); }
-  if ( axis_idx == E_AXIS ) { return((1<<E_DIRECTION_BIT)); }
-  if ( axis_idx == F_AXIS ) { return((1<<F_DIRECTION_BIT)); }
-  return((1<<G_DIRECTION_BIT));
+  if ( axis_idx == A_AXIS ) { return((1<<A_DIR_BIT)); }
+  if ( axis_idx == B_AXIS ) { return((1<<B_DIR_BIT)); }
+  if ( axis_idx == C_AXIS ) { return((1<<C_DIR_BIT)); }
+  if ( axis_idx == D_AXIS ) { return((1<<D_DIR_BIT)); }
+  if ( axis_idx == E_AXIS ) { return((1<<X_DIR_BIT)); }
+  if ( axis_idx == F_AXIS ) { return((1<<Y_DIR_BIT)); }
+  return((1<<Z_DIR_BIT));
 }
 
 
