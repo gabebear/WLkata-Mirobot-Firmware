@@ -509,7 +509,7 @@ void go_reset_pos()
 	
 	float temp[7] ={0,0,0,0,0,0,0};
 	for(int idx = 0;idx < N_AXIS; idx++)
-		{
+	{
 			if(bit_istrue(settings.homing_pos_dir_mask,bit(idx)))
 				{
 				temp[idx] = - settings.Reset[idx];
@@ -602,3 +602,40 @@ void write_reset_distance()
 
 }
 
+void reset_button_init()
+{
+	BUTTON_RESET_DDR &= ~(BUTTON_RESET_MASK); // Set as input pins
+	BUTTON_RESET_PORT |= (BUTTON_RESET_MASK);  // Enable internal pull-up resistors. Normal high operation.
+
+}
+
+void reset_button_check()
+{
+ if ((BUTTON_RESET_PIN & BUTTON_RESET_MASK)==0) {
+ 	delay_ms(10);
+	   if ((BUTTON_RESET_PIN & BUTTON_RESET_MASK)==0) {
+		if (bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE)) { 
+            sys.state = STATE_HOMING; // Set system state variable
+            // Only perform homing if Grbl is idle or lost.
+            
+            // TODO: Likely not required.
+            if (system_check_safety_door_ajar()) { // Check safety door switch before homing.
+              bit_true(sys_rt_exec_state, EXEC_SAFETY_DOOR);
+              protocol_execute_realtime(); // Enter safety door mode.
+            }
+
+			printString("Button reset...");
+			
+            mc_homing_cycle(); 
+			//这里是执行复位以后的初始化脚本，因为没有所以先注释掉
+            if (!sys.abort) {  // Execute startup scripts after successful homing.
+              sys.state = STATE_IDLE; // Set to IDLE when complete.
+              st_go_idle(); // Set steppers to the settings idle state before returning.
+              //system_execute_startup(line); 
+            }
+            
+          } else { return(STATUS_SETTING_DISABLED); }
+
+	   }
+ 	}
+}

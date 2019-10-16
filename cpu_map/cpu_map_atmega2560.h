@@ -42,6 +42,14 @@
 //#define BLOCK_BUFFER_SIZE	36
 //#define LINE_BUFFER_SIZE	100
 
+//扩展按键针脚初始化
+#define BUTTON_RESET_DDR      DDRJ
+#define BUTTON_RESET_PORT     PORTJ
+#define BUTTON_RESET_PIN      PINJ
+
+#define BUTTON_RESET_BIT  1
+#define BUTTON_RESET_MASK (1<<BUTTON_RESET_BIT)
+
 // Define step pulse output pins. NOTE: All step bit pins must be on the same port.
 #define STEP_DDR_A      DDRA
 #define STEP_PORT_A     PORTA

@@ -260,8 +260,10 @@ void mc_homing_cycle()
   #endif
 	memset(sys.position,0,sizeof(sys.position));
 
-  if(settings.robot_qinnew.use_reset_pos)
+  if(settings.robot_qinnew.use_reset_pos) {
 	go_reset_pos();
+	//printString("\r\ntest1");
+  	}
 
   
   protocol_execute_realtime(); // Check for reset and set system abort.

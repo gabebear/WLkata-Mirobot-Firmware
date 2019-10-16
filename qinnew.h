@@ -41,7 +41,7 @@ typedef struct {
 } robot_t;
 
 
-#define QINNEW_VERSION "20190903"
+#define QINNEW_VERSION "20191016"
 
 
 #define _use_reset_pos_  //是否在复位以后运动复位的距离！！！
@@ -72,6 +72,8 @@ void angle_to_coordinate();
 void coordinate_to_angle();
 void start_calibration();
 void write_reset_distance();
+void reset_button_init();
+void reset_button_check();
 
 
 

@@ -103,6 +103,8 @@ int main(void)
 
 	//use_interpolation = 0;//是否使用插补，0为不使用，后期写入EEPROM指令当中
 	sys.home_complate_flag = 0;//初始化复位完成标志为假
+
+    reset_button_init();//reset扩展板按键初始化
 	
     // Start Grbl main loop. Processes program inputs and executes them.
     protocol_main_loop();
