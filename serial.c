@@ -106,6 +106,8 @@ void serial_init()
 
 void serial2_init()
 {
+  PORTH |= (1<<0);//防止串口2收到乱码，添加接收引脚上拉
+
   // Set baud rate
   #if BAUD_RATE < 57600
     uint16_t UBRR2_value = ((F_CPU / (8L * BAUD_RATE)) - 1)/2 ;
