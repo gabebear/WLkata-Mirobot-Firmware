@@ -150,6 +150,7 @@ void report_init_message()
 {
   //printPgmString(PSTR("\r\nQinnew Robot " QINNEW_VERSION " based on Grbl " GRBL_VERSION " ['$' for help]\r\n"));
   printPgmString(PSTR("\r\nGrbl " GRBL_VERSION " ['$' for help]\r\n"));
+  printPgmString(PSTR("\r\nQinnew Robot " QINNEW_VERSION " based on Grbl " GRBL_VERSION " ['$' for help]\r\n"));
 }
 
 void report_robot_length_message()

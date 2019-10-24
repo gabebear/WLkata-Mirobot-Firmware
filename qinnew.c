@@ -316,7 +316,7 @@ void Inverse(double x_wrist,double y_wrist,double z_wrist,double alpha,double be
     double THETA5;
     double THETA6,theta6;
     
-    temp1 = abs(theta5 - pi);      // 为了应对浮点数精度问题
+    temp1 = fabs(theta5 - pi);      // 为了应对浮点数精度问题  ,之前版本的bug在于使用了abs函数！
     if(theta5 < 0.0001) {
         THETA4= 0;
         THETA5= 0;
@@ -339,7 +339,7 @@ void Inverse(double x_wrist,double y_wrist,double z_wrist,double alpha,double be
         theta4 = - atan2 (g23/ temp1, g13/ temp1);
 				theta6 = atan2((g32/ temp1), (- g31/ temp1));
 				THETA4=  conversion( theta4,180,-180);
-				THETA5=  conversion( theta5,130,-90);
+				THETA5=  conversion( theta5,120,-90);
 				THETA6=  conversion( theta6,180,-180);
         
         // FLIPPED POSTION
@@ -347,7 +347,7 @@ void Inverse(double x_wrist,double y_wrist,double z_wrist,double alpha,double be
         double theta55 = -theta5;
         double theta66 =  theta6 + pi;
         double THETA44 = conversion(theta44 , 180 , -180);        
-        double THETA55 = conversion(theta55 , 130 , -90);        
+        double THETA55 = conversion(theta55 , 120 , -90);        
         double THETA66 = conversion(theta66 , 180 , -180);
         
       //  tim_in = SysTick_Timer - tim_in;
