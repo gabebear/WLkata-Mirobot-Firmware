@@ -278,7 +278,7 @@ float system_convert_axis_steps_to_mpos(int32_t *steps, uint8_t idx)
   return(pos);
 }
   
-
+//将各个轴的用步数表示的位置转换成用MM表示的位置
 void system_convert_array_steps_to_mpos(float *position, int32_t *steps)
 {
   uint8_t idx;

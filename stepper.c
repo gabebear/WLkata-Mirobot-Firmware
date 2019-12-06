@@ -91,6 +91,7 @@ typedef struct {
   uint8_t execute_step;     // Flags step execution for each interrupt.
   uint8_t step_pulse_time;  // Step pulse reset time after step rise
   uint8_t step_outbits;         // The next stepping-bits to be output
+                             //step_outbits以掩码的形式指示下一次要输出一个脉冲的引脚是谁
   uint8_t dir_outbits;
   #ifdef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
     uint32_t steps[N_AXIS];
@@ -447,7 +448,7 @@ ISR(TIMER1_COMPA_vect)
   } 
   // During a homing cycle, lock out and prevent desired axes from moving.
   if (sys.state == STATE_HOMING) { st.step_outbits &= sys.homing_axis_lock; }   
-  //在复位循环中，锁定轴，不让该轴动了
+  //在复位循环中，将不涉及复位运动的轴锁住，不让其运动
 
   st.step_count--; // Decrement step events count 
   if (st.step_count == 0) {

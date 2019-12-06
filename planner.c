@@ -434,6 +434,7 @@ uint8_t plan_check_full_buffer()
 
 
 // Reset the planner position vectors. Called by the system abort/initialization routine.
+//重置规划器位置矢量。由系统中止/初始化例程调用。
 void plan_sync_position()
 {
   // TODO: For motor configurations not in the same coordinate frame as the machine position,

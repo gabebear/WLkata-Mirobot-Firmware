@@ -84,12 +84,14 @@
 #define HOMING_CYCLE_2 (1<<G_AXIS)//z
 #define HOMING_CYCLE_3 (1<<A_AXIS)//a
 #define HOMING_CYCLE_4 (1<<B_AXIS)//b
+#define HOMING_EFGA (HOMING_CYCLE_0|HOMING_CYCLE_1|HOMING_CYCLE_2|HOMING_CYCLE_3)
+#define HOMING_ALL (HOMING_CYCLE_0|HOMING_CYCLE_1|HOMING_CYCLE_2|HOMING_CYCLE_3|HOMING_CYCLE_4)
 //#define HOMING_CYCLE_5 (1<<C_AXIS)//c
 
 // Number of homing cycles performed after when the machine initially jogs to limit switches.
 // This help in preventing overshoot and should improve repeatability. This value should be one or 
 // greater.
-#define N_HOMING_LOCATE_CYCLE 1 // Integer (1-128)
+#define N_HOMING_LOCATE_CYCLE 1 // Integer (1-128)复位碰到限位以后重复复位的次数
 
 // After homing, Grbl will set by default the entire machine space into negative space, as is typical
 // for professional CNC machines, regardless of where the limit switches are located. Uncomment this 

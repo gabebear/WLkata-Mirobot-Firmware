@@ -242,7 +242,10 @@ void mc_homing_cycle()
   // Perform homing routine. NOTE: Special motion case. Only system reset works.
   
   // Search to engage all axes limit switches at faster homing seek rate.
-  limits_go_home(HOMING_CYCLE_0);  // Homing cycle 0
+
+  limits_go_home(HOMING_ALL); 
+  //limits_go_home(HOMING_CYCLE_4); 
+ /* limits_go_home(HOMING_CYCLE_0);  // Homing cycle 0
   #ifdef HOMING_CYCLE_1
     limits_go_home(HOMING_CYCLE_1);  // Homing cycle 1
   #endif
@@ -257,7 +260,7 @@ void mc_homing_cycle()
   #endif
   #ifdef HOMING_CYCLE_5
     limits_go_home(HOMING_CYCLE_5);  // Homing cycle 5
-  #endif
+  #endif*/
 	memset(sys.position,0,sizeof(sys.position));
 
   if(settings.robot_qinnew.use_reset_pos) {

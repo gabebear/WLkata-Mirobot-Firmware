@@ -82,7 +82,7 @@ uint8_t limits_get_state()
       if (pin & get_limit_pin_mask(idx)) { limit_state |= (1 << idx); }
     }
   }
-  return(limit_state);
+  return(limit_state);//返回的是各个轴限位是否触发，轴编号的掩码
 }
 
 
@@ -150,11 +150,7 @@ void limits_go_home(uint8_t cycle_mask)
 {
   if (sys.abort) { return; } // Block if system reset has been issued.
 
-  uint8_t temp_a = 1;
-  if(cycle_mask == HOMING_CYCLE_4)
-  	{
-	temp_a = 3;//增加的为了增加第五轴的复位距离防止失败
-  	}
+  
 
   
   // Initialize
@@ -163,6 +159,12 @@ void limits_go_home(uint8_t cycle_mask)
   float target[N_AXIS];
   float max_travel = 0.0;
   uint8_t idx;
+
+  //第一次遍历各轴
+  //1、获取step_pin[idx] = 0000010的每个轴的完整掩码，注意这里是硬件的掩码，帅哥修改成了两组IO口，
+  //好在IO编号不同，因此不出现问题！
+  //2、按照各个轴最大的复位移动距离计算出公共的最大复位移动距离：max_travel
+  
   for (idx=0; idx<N_AXIS; idx++) {  
     // Initialize step pin masks
     step_pin[idx] = get_step_pin_mask(idx);
@@ -185,54 +187,71 @@ void limits_go_home(uint8_t cycle_mask)
   uint8_t limit_state, axislock, n_active_axis;
   do {
 
-    system_convert_array_steps_to_mpos(target,sys.position);
+    system_convert_array_steps_to_mpos(target,sys.position);//把系统各个轴当前位置的MM值保存到target中
 
     // Initialize and declare variables needed for homing routine.
     axislock = 0;
     n_active_axis = 0;
+
+	//各个轴第二次轮询操作
+	//1、n_active_axis记录了需要复位的轴的个数
+	//2、将需要复位的轴的系统绝对位置设置为0
+	//3、设置各个复位轴的最大复位移动距离为正或者负max_travel
+	//4、axislock是一个整体的需要复位的轴的掩码，就是哪个轴需要复位，掩码的哪一位为1
     for (idx=0; idx<N_AXIS; idx++) {
+		uint8_t temp_a = 1;
+  			if(idx == B_AXIS)
+  				{
+					temp_a = 3;//增加的为了增加第五轴的复位距离防止失败
+  				}
+
       // Set target location for active axes and setup computation for homing rate.
-      if (bit_istrue(cycle_mask,bit(idx))) {
-        n_active_axis++;
-        sys.position[idx] = 0;
+      if (bit_istrue(cycle_mask,bit(idx))) {//判断轮询到的轴是否需要复位
+        n_active_axis++;//这里统计了cycle_mask掩码里所包含的需要复位轴的个数
+        sys.position[idx] = 0;//将需要复位的轴的系统绝对位置设置为0
         // Set target direction based on cycle mask and homing cycle approach state.
         // NOTE: This happens to compile smaller than any other implementation tried.
-        if (bit_istrue(settings.homing_dir_mask,bit(idx))) {
-          if (approach) { target[idx] = -max_travel; }
-          else { target[idx] = max_travel; }
+        if (bit_istrue(settings.homing_dir_mask,bit(idx))) {//判断当前轴的复位方向是否设置为反向
+          if (approach) { target[idx] = -max_travel; }//approach作用巧妙，用于控制三次运动过程！
+          else { target[idx] = max_travel*temp_a; }
         } else { 
           if (approach) { target[idx] = max_travel; }
-          else { target[idx] = -max_travel; }
+          else { target[idx] = -max_travel*temp_a; }
         }        
         // Apply axislock to the step port pins active in this cycle.
-        axislock |= step_pin[idx];
+        axislock |= step_pin[idx];//这个axislock是一个整体的需要复位的轴的掩码（硬件），就是哪个轴需要复位，掩码的哪一位为1
       }
 
     }
     homing_rate *= sqrt(n_active_axis); // [sqrt(N_AXIS)] Adjust so individual axes all move at homing rate.
-    sys.homing_axis_lock = axislock;
+                                        //调整使各个轴都以归位速度移动
+    sys.homing_axis_lock = axislock;//在复位循环中，将不涉及复位运动的轴锁住，不让其运动
 
-    plan_sync_position(); // Sync planner position to current machine position.
+    plan_sync_position(); // Sync planner position to current machine position.将计划器位置同步到当前机器位置
     
     // Perform homing cycle. Planner buffer should be empty, as required to initiate the homing cycle.
     #ifdef USE_LINE_NUMBERS
       plan_buffer_line(target, homing_rate, false, HOMING_CYCLE_LINE_NUMBER); // Bypass mc_line(). Directly plan homing motion.
     #else
-      plan_buffer_line(target, homing_rate, false ,false); // Bypass mc_line(). Directly plan homing motion.
+      plan_buffer_line(target, homing_rate, false ,false); // 此处执行复位运动！
     #endif
     
     st_prep_buffer(); // Prep and fill segment buffer from newly planned block.
     st_wake_up(); // Initiate motion
     do {
-      if (approach) {
+      if (approach) {//只有approach为真才执行
         // Check limit state. Lock out cycle axes when they change.检查限制状态。当循环轴发生变化时, 锁定它们。
-        limit_state = limits_get_state();//这句话具体获取每隔轴限位状态
-        for (idx=0; idx<N_AXIS; idx++) {
-          if (axislock & step_pin[idx]) {
-            if (limit_state & (1 << idx)) { axislock &= ~(step_pin[idx]); }
+        limit_state = limits_get_state();//这句话具体获取每隔轴限位状态、
+        //注意这里是一个所有轴限位状态的掩码，但是不是硬件掩码，而是轴编号的掩码！
+
+	    //第三次轴轮询：
+		for (idx=0; idx<N_AXIS; idx++) {
+          if (axislock & step_pin[idx]) {//判断下当前轮询到的轴是否需要复位
+            if (limit_state & (1 << idx)) //判断一下当前复位的轴是否已经触发限位
+				{ axislock &= ~(step_pin[idx]); }//如果触发限位则修改axislock中对应轴位置为0，则ISR中该轴就不会继续发脉冲了
           }
         }
-        sys.homing_axis_lock = axislock;
+        sys.homing_axis_lock = axislock;//更新sys.homing_axis_lock
       }
 
       st_prep_buffer(); // Check and prep segment buffer. NOTE: Should take no longer than 200us.
@@ -254,26 +273,28 @@ void limits_go_home(uint8_t cycle_mask)
         } 
       }
 
-    } while (STEP_MASK_ALL & axislock);
+    } while (STEP_MASK_ALL & axislock);//这里就是判断只有当所有的轴限位都被触发后，才跳出！！！
 
     st_reset(); // Immediately force kill steppers and reset step segment buffer.
     plan_reset(); // Reset planner buffer to zero planner current position and to clear previous motions.
 
     delay_ms(settings.homing_debounce_delay); // Delay to allow transient dynamics to dissipate.
 
-    // Reverse direction and reset homing rate for locate cycle(s).
+    // Reverse direction and reset homing rate for locate cycle(s).反向并重置定位周期的归零率。
     approach = !approach;
 
     // After first cycle, homing enters locating phase. Shorten search to pull-off distance.
     if (approach) { 
-      max_travel = settings.homing_pulloff * HOMING_AXIS_LOCATE_SCALAR * temp_a; 
+      max_travel = settings.homing_pulloff * HOMING_AXIS_LOCATE_SCALAR; 
       homing_rate = settings.homing_feed_rate;
     } else {
-      max_travel = settings.homing_pulloff * temp_a;    
+      max_travel = settings.homing_pulloff;    
       homing_rate = settings.homing_seek_rate;
     }
     
   } while (n_cycle-- > 0);
+	//这里一次回弹，就是对应n_cycle为3，进入循环三次，即：1、快速运动过去 2、回弹 3、慢速运动过去
+	//认真读了以后发现approach参数的设置非常非常巧妙！！！
       
   // The active cycle axes should now be homed and machine limits have been located. By 
   // default, Grbl defines machine space as all negative, as do most CNCs. Since limit switches
