@@ -23,10 +23,10 @@
 
 
 // Homing axis search distance multiplier. Computed by this value times the cycle travel.
-#ifndef HOMING_AXIS_SEARCH_SCALAR
-  #define HOMING_AXIS_SEARCH_SCALAR  1.5 // Must be > 1 to ensure limit switch will be engaged.
+#ifndef HOMING_AXIS_SEARCH_SCALAR//这个是复位开始以后，最多走多少距离的系数，他是各轴最大运动距离的倍数
+  #define HOMING_AXIS_SEARCH_SCALAR  3//1.5 // Must be > 1 to ensure limit switch will be engaged.
 #endif
-#ifndef HOMING_AXIS_LOCATE_SCALAR
+#ifndef HOMING_AXIS_LOCATE_SCALAR//这个是复位碰到形成开关以后的回弹距离系数
   #define HOMING_AXIS_LOCATE_SCALAR  5.0 // Must be > 1 to ensure limit switch is cleared.
 #endif
 
@@ -47,7 +47,7 @@ void limits_init()
     limits_disable(); 
   }
   
-  #ifdef ENABLE_SOFTWARE_DEBOUNCE
+  #ifdef ENABLE_SOFTWARE_DEBOUNCE//使用看门狗来给限位开关做软件消抖
     MCUSR &= ~(1<<WDRF);
     WDTCSR |= (1<<WDCE) | (1<<WDE);
     WDTCSR = (1<<WDP0); // Set time-out at ~32msec.
@@ -153,7 +153,7 @@ void limits_go_home(uint8_t cycle_mask)
   uint8_t temp_a = 1;
   if(cycle_mask == HOMING_CYCLE_4)
   	{
-	temp_a = 3;
+	temp_a = 3;//增加的为了增加第五轴的复位距离防止失败
   	}
 
   
@@ -173,7 +173,7 @@ void limits_go_home(uint8_t cycle_mask)
     if (bit_istrue(cycle_mask,bit(idx))) { 
       // Set target based on max_travel setting. Ensure homing switches engaged with search scalar.
       // NOTE: settings.max_travel[] is stored as a negative value.
-      max_travel = max(max_travel,(-HOMING_AXIS_SEARCH_SCALAR)*settings.max_travel[idx]);
+      max_travel = max(max_travel,(-HOMING_AXIS_SEARCH_SCALAR)*settings.max_travel[idx]);//这个确定的是复位开始以后最大的复位移动距离，超过该距离会报错homing failed
     }
   }
 
