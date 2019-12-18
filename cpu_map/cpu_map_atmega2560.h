@@ -126,9 +126,9 @@
 
 #define A_LIMIT_BIT     5 // SOPTO4//第二版电路图
 #define B_LIMIT_BIT     6 // SOPTO5
-#define C_LIMIT_BIT     7 // SOPTO6
+#define C_LIMIT_BIT     7 // SOPTO6（第一轴的另外一个方向的限位！）
 #define D_LIMIT_BIT     2 // 未用
-#define E_LIMIT_BIT     0 // SOPTO1
+#define E_LIMIT_BIT     0 // SOPTO1第一轴开始复位运动的限位
 #define F_LIMIT_BIT     1 // SOPTO2
 #define G_LIMIT_BIT     4 // SOPTO3
 
@@ -144,8 +144,11 @@
 																			//PL6_PIN 43对应了SOPT08
 #define LIMIT_INT       PCIE0  // Pin change interrupt enable pin
 #define LIMIT_INT_vect  PCINT0_vect
-#define LIMIT_PCMSK     PCMSK0 // Pin change interrupt register
+#define LIMIT_PCMSK     PCMSK0 // Pin change interrupt register 设置是否在对应引脚是能引脚中断
 #define LIMIT_MASK ((1<<A_LIMIT_BIT)|(1<<B_LIMIT_BIT)|(1<<C_LIMIT_BIT)|(1<<D_LIMIT_BIT)|(1<<E_LIMIT_BIT)|(1<<F_LIMIT_BIT)|(1<<G_LIMIT_BIT)) // All limit bits
+#define LIMIT_MASK_B_C_D_E_F_G ((1<<B_LIMIT_BIT)|(1<<C_LIMIT_BIT)|(1<<D_LIMIT_BIT)|(1<<E_LIMIT_BIT)|(1<<F_LIMIT_BIT)|(1<<G_LIMIT_BIT)) // All limit bits
+#define LIMIT_MASK_E (1<<E_LIMIT_BIT)// All limit bits
+
 
 // Define spindle enable and spindle direction output pins.
 #define SPINDLE_ENABLE_DDR      DDRH

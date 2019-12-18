@@ -102,13 +102,21 @@ void settings_restore(uint8_t restore_flag) {
   settings.acceleration[E_AXIS] = DEFAULT_E_ACCELERATION;
   settings.acceleration[F_AXIS] = DEFAULT_F_ACCELERATION;
   settings.acceleration[G_AXIS] = DEFAULT_G_ACCELERATION;
-	settings.max_travel[A_AXIS] = (-DEFAULT_A_MAX_TRAVEL);
-	settings.max_travel[B_AXIS] = (-DEFAULT_B_MAX_TRAVEL);
-	settings.max_travel[C_AXIS] = (-DEFAULT_C_MAX_TRAVEL);
-  settings.max_travel[D_AXIS] = (-DEFAULT_D_MAX_TRAVEL); 
-  settings.max_travel[E_AXIS] = (-DEFAULT_E_MAX_TRAVEL);
-  settings.max_travel[F_AXIS] = (-DEFAULT_F_MAX_TRAVEL);
-  settings.max_travel[G_AXIS] = (-DEFAULT_G_MAX_TRAVEL); 
+	settings.max_travel[A_AXIS] = DEFAULT_A_MAX_TRAVEL;
+	settings.max_travel[B_AXIS] = DEFAULT_B_MAX_TRAVEL;
+	settings.max_travel[C_AXIS] = DEFAULT_C_MAX_TRAVEL;
+  settings.max_travel[D_AXIS] = DEFAULT_D_MAX_TRAVEL; 
+  settings.max_travel[E_AXIS] = DEFAULT_E_MAX_TRAVEL;
+  settings.max_travel[F_AXIS] = DEFAULT_F_MAX_TRAVEL;
+  settings.max_travel[G_AXIS] = DEFAULT_G_MAX_TRAVEL; 
+
+  	settings.min_travel[A_AXIS] = DEFAULT_A_MIN_TRAVEL;
+	settings.min_travel[B_AXIS] = DEFAULT_B_MIN_TRAVEL;
+	settings.min_travel[C_AXIS] = DEFAULT_C_MIN_TRAVEL;
+  settings.min_travel[D_AXIS] = DEFAULT_D_MIN_TRAVEL; 
+  settings.min_travel[E_AXIS] = DEFAULT_E_MIN_TRAVEL;
+  settings.min_travel[F_AXIS] = DEFAULT_F_MIN_TRAVEL;
+  settings.min_travel[G_AXIS] = DEFAULT_G_MIN_TRAVEL; 
 
   settings.Reset[A_AXIS] = DEFAULTS_RESET_A;
   settings.Reset[B_AXIS] = DEFAULTS_RESET_B;
@@ -241,8 +249,9 @@ uint8_t settings_store_global_setting(uint8_t parameter, float value) {
             settings.max_rate[parameter] = value;
             break;
           case 2: settings.acceleration[parameter] = value*60*60; break; // Convert to mm/min^2 for grbl internal use.
-          case 3: settings.max_travel[parameter] = -value; break;  // Store as negative for grbl internal use.
-          case 4: settings.Reset[parameter] = value;break;//保存复位以后各个轴需要运动的距离角度数！
+          case 3: settings.max_travel[parameter] = value; break;  // Store as negative for grbl internal use.
+		  case 4: settings.min_travel[parameter] = value; break;
+		  case 5: settings.Reset[parameter] = value;break;//保存复位以后各个轴需要运动的距离角度数！
         }
         break; // Exit while-loop after setting has been configured and proceed to the EEPROM write call.
       } else {

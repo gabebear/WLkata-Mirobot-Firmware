@@ -83,6 +83,8 @@ uint8_t serial2_get_tx_buffer_count()
 
 void serial_init()
 {
+	PORTE |= (1<<0);//防止串口1收到乱码，添加接收引脚上拉
+	
   // Set baud rate
   #if BAUD_RATE < 57600
     uint16_t UBRR0_value = ((F_CPU / (8L * BAUD_RATE)) - 1)/2 ;

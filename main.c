@@ -30,9 +30,10 @@ int main(void)
 {
   // Initialize system upon power-up.
   serial_init();   // Setup serial baud rate and interrupts
-
+  //printString("\r\nSerial1 init Successful!");
 #ifdef serial2
   serial2_init();
+  //printString("\r\nSerial2 init Successful!");
 #endif
   settings_init(); // Load Grbl settings from EEPROM
   stepper_init();  // Configure stepper pins and interrupt timers

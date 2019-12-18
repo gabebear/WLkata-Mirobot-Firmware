@@ -28,171 +28,11 @@
 #define defaults_h
 
 
-#ifdef yellow
-  // Grbl generic default settings. Should work across different machines.
-  #define DEFAULT_A_STEPS_PER_MM 64.0
-  #define DEFAULT_B_STEPS_PER_MM 22.22
-  #define DEFAULT_C_STEPS_PER_MM 22.22
-  #define DEFAULT_D_STEPS_PER_MM 250.0
-  #define DEFAULT_E_STEPS_PER_MM 56.73
-  #define DEFAULT_F_STEPS_PER_MM 113.33
-  #define DEFAULT_G_STEPS_PER_MM 64.0
-  #define DEFAULT_A_MAX_RATE 1800.0 // mm/min
-  #define DEFAULT_B_MAX_RATE 1500.0 // mm/min
-  #define DEFAULT_C_MAX_RATE 2500.0 // mm/min
-  #define DEFAULT_D_MAX_RATE 500.0 // mm/min
-  #define DEFAULT_E_MAX_RATE 1800.0 // mm/min
-  #define DEFAULT_F_MAX_RATE 1500.0 // mm/min
-  #define DEFAULT_G_MAX_RATE 1800.0 // mm/min
-  #define DEFAULT_A_ACCELERATION 500.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_B_ACCELERATION 500.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_C_ACCELERATION 500.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_D_ACCELERATION 8.48*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_E_ACCELERATION 200.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_F_ACCELERATION 200.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_G_ACCELERATION 300.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_A_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_B_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_C_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_D_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_E_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_F_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_G_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_STEP_PULSE_MICROSECONDS 10
-  #define DEFAULT_STEPPING_INVERT_MASK 0
-  #define DEFAULT_DIRECTION_INVERT_MASK 54
-  #define DEFAULT_STEPPER_IDLE_LOCK_TIME 25 // msec (0-254, 255 keeps steppers enabled)
-#define DEFAULT_STATUS_REPORT_MASK ((BITFLAG_RT_STATUS_MACHINE_POSITION)|(BITFLAG_RT_STATUS_WORK_POSITION)|(BITFLAG_RT_STATUS_Coordinate_MODE)|(BITFLAG_RT_STATUS_PUMP_PWM))
-  #define DEFAULT_JUNCTION_DEVIATION 0.01 // mm
-  #define DEFAULT_ARC_TOLERANCE 0.002 // mm
-  #define DEFAULT_REPORT_INCHES 0 // false
-  #define DEFAULT_INVERT_ST_ENABLE 0 // false
-  #define DEFAULT_INVERT_LIMIT_PINS 0 // false
-  #define DEFAULT_SOFT_LIMIT_ENABLE 0 // false
-  #define DEFAULT_HARD_LIMIT_ENABLE 0  // false
-  #define DEFAULT_HOMING_ENABLE 1  // 
-  #define DEFAULT_HOMING_DIR_MASK 35 // move positive dir
-  #define DEFAULT_HOMING_FEED_RATE 150.0 // mm/min
-  #define DEFAULT_HOMING_SEEK_RATE 500.0 // mm/min
-  #define DEFAULT_HOMING_DEBOUNCE_DELAY 250 // msec (0-65k)
-  #define DEFAULT_HOMING_PULLOFF 10.0 // mm
-
-
-  #define DEFAULTS_RESET_A 147.0//自己增加的复位值
-  #define DEFAULTS_RESET_B 192.979
-  #define DEFAULTS_RESET_C 0
-  #define DEFAULTS_RESET_D 0
-  #define DEFAULTS_RESET_E 0
-  #define DEFAULTS_RESET_F 44.0
-  #define DEFAULTS_RESET_G 59.0
-
-  #define DEFAULT_HOMING_POS_MASK 64 //复位以后在运动的方向位掩码
-
-  #define DEFAULTS_D1 78.0
-  #define DEFAULTS_A1 32.0
-  #define DEFAULTS_A2 108.0
-  #define DEFAULTS_A3 20.0
-  #define DEFAULTS_D4 176.0
-  #define DEFAULTS_L -63.0
-  #define DEFAULTS_use_interpolation 0
-  #define DEFAULTS_interpolation_num 50
-  #define DEFAULTS_use_compensation 0 
-  #define DEFAULTS_compensation_num 2
-  #define DEFAULTS_use_reset_pos 1
-  #define DEFAULTS_use_Back_to_text 1
-  #define DEFAULTS_offset_x 0
-  #define DEFAULTS_offset_y 0
-  #define DEFAULTS_offset_z 0
-#endif
-
-
-#ifdef  Purple
-  #define DEFAULT_A_STEPS_PER_MM 32.0
-  #define DEFAULT_B_STEPS_PER_MM 133.32
-  #define DEFAULT_C_STEPS_PER_MM 22.22
-  #define DEFAULT_D_STEPS_PER_MM 250.0
-  #define DEFAULT_E_STEPS_PER_MM 56.73
-  #define DEFAULT_F_STEPS_PER_MM 113.33
-  #define DEFAULT_G_STEPS_PER_MM 64.0
-  #define DEFAULT_A_MAX_RATE 1800.0 // mm/min
-  #define DEFAULT_B_MAX_RATE 1500.0 // mm/min
-  #define DEFAULT_C_MAX_RATE 2500.0 // mm/min
-  #define DEFAULT_D_MAX_RATE 500.0 // mm/min
-  #define DEFAULT_E_MAX_RATE 1800.0 // mm/min
-  #define DEFAULT_F_MAX_RATE 1500.0 // mm/min
-  #define DEFAULT_G_MAX_RATE 1800.0 // mm/min
-  #define DEFAULT_A_ACCELERATION 500.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_B_ACCELERATION 500.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_C_ACCELERATION 500.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_D_ACCELERATION 8.48*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_E_ACCELERATION 200.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_F_ACCELERATION 200.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_G_ACCELERATION 300.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_A_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_B_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_C_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_D_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_E_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_F_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_G_MAX_TRAVEL 200.0 // mm
-
-  
-  #define DEFAULT_STEP_PULSE_MICROSECONDS 10
-  #define DEFAULT_STEPPING_INVERT_MASK 0
-  #define DEFAULT_DIRECTION_INVERT_MASK 5
-  #define DEFAULT_STEPPER_IDLE_LOCK_TIME 25 // msec (0-254, 255 keeps steppers enabled)
-  #define DEFAULT_STATUS_REPORT_MASK ((BITFLAG_RT_STATUS_MACHINE_POSITION)|(BITFLAG_RT_STATUS_WORK_POSITION)|(BITFLAG_RT_STATUS_Coordinate_MODE)|(BITFLAG_RT_STATUS_PUMP_PWM))
-  #define DEFAULT_JUNCTION_DEVIATION 0.01 // mm
-  #define DEFAULT_ARC_TOLERANCE 0.002 // mm
-  #define DEFAULT_REPORT_INCHES 0 // false
-  #define DEFAULT_INVERT_ST_ENABLE 0 // false
-  #define DEFAULT_INVERT_LIMIT_PINS 0 // false
-  #define DEFAULT_SOFT_LIMIT_ENABLE 0 // false
-  #define DEFAULT_HARD_LIMIT_ENABLE 0  // false
-  #define DEFAULT_HOMING_ENABLE 1  // 
-  #define DEFAULT_HOMING_DIR_MASK 32 // move positive dir
-  #define DEFAULT_HOMING_FEED_RATE 1000.0 // mm/min
-  #define DEFAULT_HOMING_SEEK_RATE 1500.0 // mm/min
-  #define DEFAULT_HOMING_DEBOUNCE_DELAY 250 // msec (0-65k)
-  #define DEFAULT_HOMING_PULLOFF 10.0 // mm
-
-
-  #define DEFAULTS_RESET_A 13.0//自己增加的复位值
-  #define DEFAULTS_RESET_B 30.0
-  #define DEFAULTS_RESET_C 0
-  #define DEFAULTS_RESET_D 0
-  #define DEFAULTS_RESET_E 15.0
-  #define DEFAULTS_RESET_F 51.999
-  #define DEFAULTS_RESET_G 55.0
-
-  #define DEFAULT_HOMING_POS_MASK 64 //复位以后在运动的方向位掩码
-
-  #define DEFAULTS_D1 78.0
-  #define DEFAULTS_A1 32.0
-  #define DEFAULTS_A2 108.0
-  #define DEFAULTS_A3 20.0
-  #define DEFAULTS_D4 170.0
-  #define DEFAULTS_L -63.0
-  #define DEFAULTS_use_interpolation 0
-  #define DEFAULTS_interpolation_num 50
-  #define DEFAULTS_use_compensation 0 
-  #define DEFAULTS_compensation_num 2
-  #define DEFAULTS_use_reset_pos 1	
-  #define DEFAULTS_use_Back_to_text 1
-  #define DEFAULTS_offset_x 0
-  #define DEFAULTS_offset_y 0
-  #define DEFAULTS_offset_z 0
-
-
-
-#endif
-
-
 #ifdef  Laser
-  #define DEFAULT_A_STEPS_PER_MM 32.0
-  #define DEFAULT_B_STEPS_PER_MM 44.44
+  #define DEFAULT_A_STEPS_PER_MM 16.000
+  #define DEFAULT_B_STEPS_PER_MM 22.220
   #define DEFAULT_C_STEPS_PER_MM 11.11
-  #define DEFAULT_D_STEPS_PER_MM 250.0
+  #define DEFAULT_D_STEPS_PER_MM 200.0
   #define DEFAULT_E_STEPS_PER_MM 56.73
   #define DEFAULT_F_STEPS_PER_MM 113.33
   #define DEFAULT_G_STEPS_PER_MM 64.0
@@ -210,18 +50,25 @@
   #define DEFAULT_E_ACCELERATION 200.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
   #define DEFAULT_F_ACCELERATION 200.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
   #define DEFAULT_G_ACCELERATION 300.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_A_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_B_MAX_TRAVEL 200.0 // mm
+  #define DEFAULT_A_MAX_TRAVEL 180.0 // mm
+  #define DEFAULT_B_MAX_TRAVEL 40.0 // mm
   #define DEFAULT_C_MAX_TRAVEL 200.0 // mm
   #define DEFAULT_D_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_E_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_F_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_G_MAX_TRAVEL 200.0 // mm
+  #define DEFAULT_E_MAX_TRAVEL 150.0 // mm
+  #define DEFAULT_F_MAX_TRAVEL 70.0 // mm
+  #define DEFAULT_G_MAX_TRAVEL 70.0 // mm
 
+  #define DEFAULT_A_MIN_TRAVEL 180
+  #define DEFAULT_B_MIN_TRAVEL 205
+  #define DEFAULT_C_MIN_TRAVEL 200
+  #define DEFAULT_D_MIN_TRAVEL 200
+  #define DEFAULT_E_MIN_TRAVEL 120
+  #define DEFAULT_F_MIN_TRAVEL 40
+  #define DEFAULT_G_MIN_TRAVEL 150
   
   #define DEFAULT_STEP_PULSE_MICROSECONDS 10
   #define DEFAULT_STEPPING_INVERT_MASK 0
-  #define DEFAULT_DIRECTION_INVERT_MASK 71
+  #define DEFAULT_DIRECTION_INVERT_MASK 119
   #define DEFAULT_STEPPER_IDLE_LOCK_TIME 0 // msec (0-254, 255 keeps steppers enabled)
   #define DEFAULT_STATUS_REPORT_MASK ((BITFLAG_RT_STATUS_MACHINE_POSITION)|(BITFLAG_RT_STATUS_WORK_POSITION)|(BITFLAG_RT_STATUS_Coordinate_MODE)|(BITFLAG_RT_STATUS_PUMP_PWM))
   #define DEFAULT_JUNCTION_DEVIATION 0.01 // mm
@@ -229,23 +76,23 @@
   #define DEFAULT_REPORT_INCHES 0 // false
   #define DEFAULT_INVERT_ST_ENABLE 0 // false
   #define DEFAULT_INVERT_LIMIT_PINS 0 // false
-  #define DEFAULT_SOFT_LIMIT_ENABLE 0 // false
+  #define DEFAULT_SOFT_LIMIT_ENABLE 1 // false
   #define DEFAULT_HARD_LIMIT_ENABLE 0  // false
   #define DEFAULT_HOMING_ENABLE 1  // 
-  #define DEFAULT_HOMING_DIR_MASK 32 // move positive dir
-  #define DEFAULT_HOMING_FEED_RATE 1000.0 // mm/min
-  #define DEFAULT_HOMING_SEEK_RATE 1500.0 // mm/min
+  #define DEFAULT_HOMING_DIR_MASK 48 // move positive dir
+  #define DEFAULT_HOMING_FEED_RATE 1500.0 // mm/min
+  #define DEFAULT_HOMING_SEEK_RATE 2000.0 // mm/min
   #define DEFAULT_HOMING_DEBOUNCE_DELAY 250 // msec (0-65k)
   #define DEFAULT_HOMING_PULLOFF 12.0 // mm
 
 
-  #define DEFAULTS_RESET_A 35.0//自己增加的复位值
-  #define DEFAULTS_RESET_B 35.0
+  #define DEFAULTS_RESET_A 196.0//自己增加的复位值
+  #define DEFAULTS_RESET_B 32
   #define DEFAULTS_RESET_C 0
   #define DEFAULTS_RESET_D 0
-  #define DEFAULTS_RESET_E 21.0
-  #define DEFAULTS_RESET_F 55.0
-  #define DEFAULTS_RESET_G 55.0
+  #define DEFAULTS_RESET_E 108.0
+  #define DEFAULTS_RESET_F 32.0
+  #define DEFAULTS_RESET_G 61.0
 
   #define DEFAULT_HOMING_POS_MASK 65 //复位以后在运动的方向位掩码
 
@@ -254,7 +101,7 @@
   #define DEFAULTS_A2 108.0
   #define DEFAULTS_A3 20.0
   #define DEFAULTS_D4 170.0
-  #define DEFAULTS_L -63.0
+  #define DEFAULTS_L -25.0
   #define DEFAULTS_use_interpolation 0
   #define DEFAULTS_interpolation_num 50
   #define DEFAULTS_use_compensation 0 
@@ -268,6 +115,8 @@
 
 
 #endif
+
+
 
 
 #endif

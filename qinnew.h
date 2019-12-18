@@ -41,7 +41,7 @@ typedef struct {
 } robot_t;
 
 
-#define QINNEW_VERSION "20191206_2"
+#define QINNEW_VERSION "20191218"
 
 
 #define _use_reset_pos_  //是否在复位以后运动复位的距离！！！
@@ -60,6 +60,7 @@ typedef struct {
 
 #define mini6_board
 
+#define MAX_TRAVEL (-200)//把用于计算复位最大移动距离的原来的参数max_travel[idx]写成固定值200
 
 
 //#define debug

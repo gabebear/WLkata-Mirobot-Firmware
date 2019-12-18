@@ -40,7 +40,11 @@
 	//printString("in mc_line\r\n");
   // If enabled, check for soft limit violations. Placed here all line motions are picked up
   // from everywhere in Grbl.
-  if (bit_istrue(settings.flags,BITFLAG_SOFT_LIMIT_ENABLE)) { limits_soft_check(target); }    
+  if(sys.home_complate_flag == 0)//确保如果是复位以后运动复位距离时不需要软限位起作用！机械臂到了复位以后的初始位置才让软限位起作用！
+				{
+				if (bit_istrue(settings.flags,BITFLAG_SOFT_LIMIT_ENABLE)) { limits_soft_check(target); }    //软限位起作用
+				}
+  	
       
   // If in check gcode mode, prevent motion by blocking planner. Soft limits still work.
   if (sys.state == STATE_CHECK_MODE) { return; }

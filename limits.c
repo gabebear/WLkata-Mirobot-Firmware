@@ -40,8 +40,9 @@ void limits_init()
     LIMIT_PORT |= (LIMIT_MASK);  // Enable internal pull-up resistors. Normal high operation.
   #endif
 
-  if (bit_istrue(settings.flags,BITFLAG_HARD_LIMIT_ENABLE)) {
-    LIMIT_PCMSK |= LIMIT_MASK; // Enable specific pins of the Pin Change Interrupt
+//由于PCINT中断只能在B端口起作用，而我们用的是D端口，因此无法使用引脚硬件中断！只能寻求软限位
+  if (bit_istrue(settings.flags,BITFLAG_HARD_LIMIT_ENABLE)) {//如果开启了硬件限位
+    LIMIT_PCMSK |= LIMIT_MASK_E;//LIMIT_MASK; // Enable specific pins of the Pin Change Interrupt
     PCICR |= (1 << LIMIT_INT); // Enable Pin Change Interrupt
   } else {
     limits_disable(); 
@@ -175,13 +176,15 @@ void limits_go_home(uint8_t cycle_mask)
     if (bit_istrue(cycle_mask,bit(idx))) { 
       // Set target based on max_travel setting. Ensure homing switches engaged with search scalar.
       // NOTE: settings.max_travel[] is stored as a negative value.
-      max_travel = max(max_travel,(-HOMING_AXIS_SEARCH_SCALAR)*settings.max_travel[idx]);//这个确定的是复位开始以后最大的复位移动距离，超过该距离会报错homing failed
-    }
+
+	  //max_travel = max(max_travel,(-HOMING_AXIS_SEARCH_SCALAR)*settings.max_travel[idx]);//这个确定的是复位开始以后最大的复位移动距离，超过该距离会报错homing failed
+	  max_travel = max(max_travel,(-HOMING_AXIS_SEARCH_SCALAR) * MAX_TRAVEL);//这个确定的是复位开始以后最大的复位移动距离，超过该距离会报错homing failed
+	}
   }
 
   // Set search mode with approach at seek rate to quickly engage the specified cycle_mask limit switches.
   //设置搜索模式，以寻道速率逼近，快速启用指定的cycle_mask限位开关。
-  bool approach = true;
+  bool approach = true;//approach代表是否是靠近限位开关的运动，真则是，假则非
   float homing_rate = settings.homing_seek_rate;
 
   uint8_t limit_state, axislock, n_active_axis;
@@ -202,7 +205,7 @@ void limits_go_home(uint8_t cycle_mask)
 		uint8_t temp_a = 1;
   			if(idx == B_AXIS)
   				{
-					temp_a = 3;//增加的为了增加第五轴的复位距离防止失败
+					temp_a = 2;//增加的为了增加第五轴的复位距离防止失败
   				}
 
       // Set target location for active axes and setup computation for homing rate.
@@ -350,16 +353,20 @@ void limits_soft_check(float *target)
 {
   uint8_t idx;
   uint8_t soft_limit_error = false;
-  for (idx=0; idx<N_AXIS; idx++) {
+  for (idx=0; idx<N_AXIS; idx++) {//遍历各轴
    
     #ifdef HOMING_FORCE_SET_ORIGIN
       // When homing forced set origin is enabled, soft limits checks need to account for directionality.
-      // NOTE: max_travel is stored as negative
-      if (bit_istrue(settings.homing_dir_mask,bit(idx))) {
+      //当启用归位强制设置原点时，软限制检查需要考虑方向性
+      // NOTE: max_travel is stored as negative注意：最大行程存储为负数
+      /*if (bit_istrue(settings.homing_dir_mask,bit(idx))) {//复位方向检查
         if (target[idx] < 0 || target[idx] > -settings.max_travel[idx]) { soft_limit_error = true; }
       } else {
         if (target[idx] > 0 || target[idx] < settings.max_travel[idx]) { soft_limit_error = true; }
-      }
+      }*/
+	  if (target[idx] < -settings.min_travel[idx] || target[idx] > settings.max_travel[idx])
+	  	{ soft_limit_error = true; }
+
     #else  
       // NOTE: max_travel is stored as negative
       if (target[idx] > 0 || target[idx] < settings.max_travel[idx]) { soft_limit_error = true; }

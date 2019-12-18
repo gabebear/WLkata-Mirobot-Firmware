@@ -543,9 +543,9 @@ void go_reset_pos()
 	printString("\r\nposition[G_AXIS]:");
 	printFloat(sys.position[G_AXIS],2);
 */
-	
-	mc_line(temp, -1.0, false ,false);
 	sys.home_complate_flag = 1;
+	mc_line(temp, -1.0, false ,false);
+	
 	//printString("in homeing moving...");
 }
 
@@ -579,11 +579,11 @@ void coordinate_to_angle()
 
 void start_calibration()//开始校准，清零原来复位参数
 {
-	settings_store_global_setting(140, 0);
-	settings_store_global_setting(141, 0);
-	settings_store_global_setting(144, 0);
-	settings_store_global_setting(145, 0);
-	settings_store_global_setting(146, 0);
+	settings_store_global_setting(150, 0);
+	settings_store_global_setting(151, 0);
+	settings_store_global_setting(154, 0);
+	settings_store_global_setting(155, 0);
+	settings_store_global_setting(156, 0);
 
 }
 
@@ -594,11 +594,11 @@ void write_reset_distance()
 	double print_position[N_AXIS];
 	system_convert_array_steps_to_mpos(print_position,current_position);
 	
-	settings_store_global_setting(140, fabs(print_position[A_AXIS]));//a
-	settings_store_global_setting(141, fabs(print_position[B_AXIS]));//b
-	settings_store_global_setting(144, fabs(print_position[E_AXIS]));//e
-	settings_store_global_setting(145, fabs(print_position[F_AXIS]));//f
-	settings_store_global_setting(146, fabs(print_position[G_AXIS]));//g
+	settings_store_global_setting(150, fabs(print_position[A_AXIS]));//a
+	settings_store_global_setting(151, fabs(print_position[B_AXIS]));//b
+	settings_store_global_setting(154, fabs(print_position[E_AXIS]));//e
+	settings_store_global_setting(155, fabs(print_position[F_AXIS]));//f
+	settings_store_global_setting(156, fabs(print_position[G_AXIS]));//g
 
 }
 
@@ -612,7 +612,7 @@ void reset_button_init()
 void reset_button_check()
 {
  if ((BUTTON_RESET_PIN & BUTTON_RESET_MASK)==0) {
- 	delay_ms(10);
+ 	delay_ms(3000);//设置复位按钮的延时时间
 	   if ((BUTTON_RESET_PIN & BUTTON_RESET_MASK)==0) {
 		if (bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE)) { 
             sys.state = STATE_HOMING; // Set system state variable
