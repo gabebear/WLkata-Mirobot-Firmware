@@ -110,7 +110,7 @@ uint8_t system_execute_line(char *line)
   switch( line[char_counter] ) {
     case 0 : report_grbl_help(); break;
     case '$': case 'G': case 'C': case 'X':
-      if ( line[(char_counter+1)] != 0 ) { return(STATUS_INVALID_STATEMENT); }
+      if ( (line[(char_counter+1)] != 0)&&(line[(char_counter+1)] != 'H') ) { return(STATUS_INVALID_STATEMENT); }
       switch( line[char_counter] ) {
         case '$' : // Prints Grbl settings
           if ( sys.state & (STATE_CYCLE | STATE_HOLD) ) { return(STATUS_IDLE_ERROR); } // Block during cycle. Takes too long to print.
@@ -168,7 +168,13 @@ uint8_t system_execute_line(char *line)
           if ( line[++char_counter] != 0 ) { return(STATUS_INVALID_STATEMENT); }
           else { report_ngc_parameters(); }
           break;          
-        case 'H' : // Perform homing cycle [IDLE/ALARM]
+        case 'H' : // Perform homing cycle [IDLE/ALARM] 
+			//printString(line[(char_counter+1)]);
+		  if (line[(char_counter+1)] == 'H' )
+		  	{
+				sys.sym_homing = 1;//复位指令为$HH时，各轴单独复位 
+		    }
+		  
           if (bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE)) { 
             sys.state = STATE_HOMING; // Set system state variable
             // Only perform homing if Grbl is idle or lost.

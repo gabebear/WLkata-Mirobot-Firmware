@@ -50,7 +50,7 @@
   #define DEFAULT_E_ACCELERATION 200.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
   #define DEFAULT_F_ACCELERATION 200.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
   #define DEFAULT_G_ACCELERATION 300.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_A_MAX_TRAVEL 180.0 // mm
+  #define DEFAULT_A_MAX_TRAVEL 360.0 // mm
   #define DEFAULT_B_MAX_TRAVEL 40.0 // mm
   #define DEFAULT_C_MAX_TRAVEL 200.0 // mm
   #define DEFAULT_D_MAX_TRAVEL 200.0 // mm
@@ -58,7 +58,7 @@
   #define DEFAULT_F_MAX_TRAVEL 70.0 // mm
   #define DEFAULT_G_MAX_TRAVEL 70.0 // mm
 
-  #define DEFAULT_A_MIN_TRAVEL 180
+  #define DEFAULT_A_MIN_TRAVEL 360
   #define DEFAULT_B_MIN_TRAVEL 205
   #define DEFAULT_C_MIN_TRAVEL 200
   #define DEFAULT_D_MIN_TRAVEL 200
@@ -86,13 +86,13 @@
   #define DEFAULT_HOMING_PULLOFF 12.0 // mm
 
 
-  #define DEFAULTS_RESET_A 196.0//自己增加的复位值
-  #define DEFAULTS_RESET_B 32
+  #define DEFAULTS_RESET_A 260.0//自己增加的复位值
+  #define DEFAULTS_RESET_B 27.993
   #define DEFAULTS_RESET_C 0
   #define DEFAULTS_RESET_D 0
-  #define DEFAULTS_RESET_E 108.0
-  #define DEFAULTS_RESET_F 32.0
-  #define DEFAULTS_RESET_G 61.0
+  #define DEFAULTS_RESET_E 109.0
+  #define DEFAULTS_RESET_F 33.0
+  #define DEFAULTS_RESET_G 57.0
 
   #define DEFAULT_HOMING_POS_MASK 65 //复位以后在运动的方向位掩码
 

@@ -48,7 +48,7 @@ static void protocol_execute_line(char *line)
 
   } else if (line[0] == '$') {
     // Grbl '$' system command
-    report_status_message(system_execute_line(line));
+  report_status_message(system_execute_line(line));
     
   } else if (sys.state == STATE_ALARM) {
     // Everything else is gcode. Block if in alarm mode.

@@ -88,6 +88,8 @@ typedef struct {
   								////限位发生时锁定轴。 用作步进器ISR中的轴运动掩码。
 
   double position_Cartesian[N_Cartesian];//新加入的笛卡尔坐标保存
+
+  bool sym_homing;
 } system_t;
 extern system_t sys;
 
