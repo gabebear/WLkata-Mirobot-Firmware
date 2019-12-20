@@ -90,6 +90,8 @@ typedef struct {
   double position_Cartesian[N_Cartesian];//新加入的笛卡尔坐标保存
 
   bool sym_homing;
+
+  bool reset_homing;
 } system_t;
 extern system_t sys;
 

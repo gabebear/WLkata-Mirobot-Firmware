@@ -40,6 +40,11 @@
 	//printString("in mc_line\r\n");
   // If enabled, check for soft limit violations. Placed here all line motions are picked up
   // from everywhere in Grbl.
+    if (sys.reset_homing == 0) 
+  	{ 
+	  printString("\r\nLocked status of each axis! After the software is reset, it must be homing mechanically to move each axis!");
+      return;
+     }//增加的软件reset后必须homing的操作
   if(sys.home_complate_flag == 0)//确保如果是复位以后运动复位距离时不需要软限位起作用！机械臂到了复位以后的初始位置才让软限位起作用！
 				{
 				if (bit_istrue(settings.flags,BITFLAG_SOFT_LIMIT_ENABLE)) { limits_soft_check(target); }    //软限位起作用
@@ -271,6 +276,7 @@ void mc_homing_cycle()
   #endif
 		}
 	memset(sys.position,0,sizeof(sys.position));
+	sys.reset_homing = 1;
 
   if(settings.robot_qinnew.use_reset_pos) {
 	go_reset_pos();
