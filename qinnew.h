@@ -41,7 +41,7 @@ typedef struct {
 } robot_t;
 
 
-#define QINNEW_VERSION "20191221"
+#define QINNEW_VERSION "20191221_2"
 
 
 #define _use_reset_pos_  //是否在复位以后运动复位的距离！！！

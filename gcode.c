@@ -349,7 +349,8 @@ uint8_t gc_execute_line(char *line)
 		 case 40://开始校准，清零原来复位参数
 		 	printString("M40: Start calibration, clear the original reset parameters.\r\n");
 			start_calibration();
-		    sys.calibration = 1;
+		 	sys.calibration = 1;
+		    mc_homing_cycle(); 
 		 	break;
 
 		case 41://将校准得到的复位参数写入EEPROM中
@@ -362,6 +363,7 @@ uint8_t gc_execute_line(char *line)
 		 	printString("M50: Unlock each axis.\r\n");
 			sys.reset_homing = 1;
 		 	break;
+			
 		 	
           default: FAIL(STATUS_GCODE_UNSUPPORTED_COMMAND); // [Unsupported M command]
         }

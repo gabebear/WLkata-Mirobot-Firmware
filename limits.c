@@ -99,6 +99,7 @@ uint8_t limits_get_state_hardlimits()
     for (idx=4; idx<N_AXIS; idx++) {
       if (pin & get_limit_pin_mask(idx)) { limit_state |= (1 << idx); }
     }
+	  if (pin & (1<<C_LIMIT_BIT)) { limit_state |= (1 << C_AXIS); }//这里的限位不是C轴！而是X轴的另一个硬件限位！
   }
   return(limit_state);//返回的是各个轴限位是否触发，轴编号的掩码
 }
