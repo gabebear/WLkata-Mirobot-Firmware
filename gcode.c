@@ -350,7 +350,27 @@ uint8_t gc_execute_line(char *line)
 		 	printString("M40: Start calibration, clear the original reset parameters.\r\n");
 			start_calibration();
 		 	sys.calibration = 1;
-		    mc_homing_cycle(); 
+		    if (bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE)) {//增加的自动homing 
+            sys.state = STATE_HOMING; // Set system state variable
+            // Only perform homing if Grbl is idle or lost.
+            
+            // TODO: Likely not required.
+            if (system_check_safety_door_ajar()) { // Check safety door switch before homing.
+              bit_true(sys_rt_exec_state, EXEC_SAFETY_DOOR);
+              protocol_execute_realtime(); // Enter safety door mode.
+            }
+
+			printString("Calibration reset...");
+			
+            mc_homing_cycle(); 
+			//这里是执行复位以后的初始化脚本，因为没有所以先注释掉
+            if (!sys.abort) {  // Execute startup scripts after successful homing.
+              sys.state = STATE_IDLE; // Set to IDLE when complete.
+              st_go_idle(); // Set steppers to the settings idle state before returning.
+              //system_execute_startup(line); 
+            }
+            
+          }
 		 	break;
 
 		case 41://将校准得到的复位参数写入EEPROM中

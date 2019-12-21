@@ -96,6 +96,7 @@ typedef struct {
   bool calibration;//是否是校准状态
 
   uint8_t soft_limit_trigger_flag;//触发软限位轴的轴号
+  uint8_t hard_limit_trigger_flag;//触发软限位轴的轴号
 } system_t;
 extern system_t sys;
 
