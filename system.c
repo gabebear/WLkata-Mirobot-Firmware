@@ -124,9 +124,13 @@ uint8_t system_execute_line(char *line)
           // Perform reset when toggling off. Check g-code mode should only work if Grbl
           // is idle and ready, regardless of alarm locks. This is mainly to keep things
           // simple and consistent.
+          //这将切换Grbl的gcode解析器，让所有传入的块完全处理它们，就像在正常操作中一样，
+          //但它不会移动任何轴，忽略驻留，并关闭主轴和冷却剂。这是为了给用户提供一种方法，
+          //用Grbl的解析器检查他们的新g代码程序的运行情况，并监视是否有任何错误。
+          //（最终，这也将检查软限制违规情况。）
           if ( sys.state == STATE_CHECK_MODE ) { 
             mc_reset(); 
-            report_feedback_message(MESSAGE_DISABLED);
+            report_feedback_message(MESSAGE_DISABLED);//再发一次则失能该模式
           } else {
             if (sys.state) { return(STATUS_IDLE_ERROR); } // Requires no alarm mode.
             sys.state = STATE_CHECK_MODE;

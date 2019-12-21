@@ -86,6 +86,24 @@ uint8_t limits_get_state()
   return(limit_state);//返回的是各个轴限位是否触发，轴编号的掩码
 }
 
+uint8_t limits_get_state_hardlimits()
+{
+  uint8_t limit_state = 0;
+  uint8_t pin = (LIMIT_PIN & LIMIT_MASK);//这句话具体读限位硬件引脚的电平状态
+  #ifdef INVERT_LIMIT_PIN_MASK
+    pin ^= INVERT_LIMIT_PIN_MASK;
+  #endif
+  if (bit_isfalse(settings.flags,BITFLAG_INVERT_LIMIT_PINS)) { pin ^= LIMIT_MASK; }
+  if (pin) {  
+    uint8_t idx;
+    for (idx=4; idx<N_AXIS; idx++) {
+      if (pin & get_limit_pin_mask(idx)) { limit_state |= (1 << idx); }
+    }
+  }
+  return(limit_state);//返回的是各个轴限位是否触发，轴编号的掩码
+}
+
+
 
 // This is the Limit Pin Change Interrupt, which handles the hard limit feature. A bouncing 
 // limit switch can cause a lot of problems, like false readings and multiple interrupt calls.
@@ -111,12 +129,13 @@ uint8_t limits_get_state()
         #ifdef HARD_LIMIT_FORCE_STATE_CHECK
           // Check limit pin state. 
           if (limits_get_state()) {
+
             mc_reset(); // Initiate system kill.
             bit_true_atomic(sys_rt_exec_alarm, (EXEC_ALARM_HARD_LIMIT|EXEC_CRITICAL_EVENT)); // Indicate hard limit critical event
           }
         #else
           mc_reset(); // Initiate system kill.
-          bit_true_atomic(sys_rt_exec_alarm, (EXEC_ALARM_HARD_LIMIT|EXEC_CRITICAL_EVENT)); // Indicate hard limit critical event
+          bit_true_atomic(sys_rt_exec_alarm, (EXEC_ALARM_HARD_LIMIT|EXEC_CRITICAL_EVENT)); // Indicate hard limit critical event表示硬极限临界事件
         #endif
       }
     }
@@ -349,7 +368,7 @@ void limits_go_home(uint8_t cycle_mask)
 
 // Performs a soft limit check. Called from mc_line() only. Assumes the machine has been homed,
 // the workspace volume is in all negative space, and the system is in normal operation.
-void limits_soft_check(float *target)
+uint8_t limits_soft_check(float *target)
 {
   uint8_t idx;
   uint8_t soft_limit_error = false;
@@ -365,18 +384,22 @@ void limits_soft_check(float *target)
         if (target[idx] > 0 || target[idx] < settings.max_travel[idx]) { soft_limit_error = true; }
       }*/
 	  if (target[idx] < -settings.min_travel[idx] || target[idx] > settings.max_travel[idx])
-	  	{ soft_limit_error = true; }
+	  	{ soft_limit_error = true; 
+		  return idx;
+	  	}//修改后只返回触发软限位的轴号
 
     #else  
       // NOTE: max_travel is stored as negative
       if (target[idx] > 0 || target[idx] < settings.max_travel[idx]) { soft_limit_error = true; }
     #endif
     
-    if (soft_limit_error) {
+   // if (soft_limit_error) {
       // Force feed hold if cycle is active. All buffered blocks are guaranteed to be within 
       // workspace volume so just come to a controlled stop so position is not lost. When complete
       // enter alarm mode.
-      if (sys.state == STATE_CYCLE) {
+
+	  
+   /*   if (sys.state == STATE_CYCLE) {
         bit_true_atomic(sys_rt_exec_state, EXEC_FEED_HOLD);
         do {
           protocol_execute_realtime();
@@ -385,9 +408,13 @@ void limits_soft_check(float *target)
       }
     
       mc_reset(); // Issue system reset and ensure spindle and coolant are shutdown.
-      bit_true_atomic(sys_rt_exec_alarm, (EXEC_ALARM_SOFT_LIMIT|EXEC_CRITICAL_EVENT)); // Indicate soft limit critical event
-      protocol_execute_realtime(); // Execute to enter critical event loop and system abort
-      return;
-    }
+      bit_true_atomic(sys_rt_exec_alarm, (EXEC_ALARM_SOFT_LIMIT|EXEC_CRITICAL_EVENT)); // Indicate soft limit critical event  
+	  protocol_execute_realtime(); // Execute to enter critical event loop and system abort
+
+	  */
+      
+    //  return ;
+   // }
   }
+  return 8;
 }

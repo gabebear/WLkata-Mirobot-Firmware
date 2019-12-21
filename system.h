@@ -89,9 +89,13 @@ typedef struct {
 
   double position_Cartesian[N_Cartesian];//新加入的笛卡尔坐标保存
 
-  bool sym_homing;
+  bool sym_homing;//$h与$hh
 
-  bool reset_homing;
+  bool reset_homing;//软复位后必须机械homing
+
+  bool calibration;//是否是校准状态
+
+  uint8_t soft_limit_trigger_flag;//触发软限位轴的轴号
 } system_t;
 extern system_t sys;
 

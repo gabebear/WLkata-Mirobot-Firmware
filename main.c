@@ -62,7 +62,9 @@ int main(void)
 	sys.state_last = STATE_IDLE;//初始化最初的上一次系统状态为空闲状态
 
 	sys.sym_homing = 0;//初始化复位为多轴复位
-  	sys.reset_homing = 0;
+  	sys.reset_homing = 0;//初始化为轴锁定状态
+	sys.calibration = 0;//是否是校准状态标志
+	sys.soft_limit_trigger_flag = 8;//初始化软限位被触发的轴号，8表示无软限位被触发
   // Grbl initialization loop upon power-up or a system abort. For the latter, all processes
   // will return to this loop to be cleanly re-initialized.
   for(;;) {

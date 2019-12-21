@@ -286,6 +286,8 @@ void st_go_idle()
 // TODO: Replace direct updating of the int32 position counters in the ISR somehow. Perhaps use smaller
 // int8 variables and update position counters only when a segment completes. This can get complicated 
 // with probing and homing cycles that require true real-time positions.
+
+
 ISR(TIMER1_COMPA_vect)
 {        
 // SPINDLE_ENABLE_PORT ^= 1<<SPINDLE_ENABLE_BIT; // Debug: Used to time ISR
@@ -449,6 +451,15 @@ ISR(TIMER1_COMPA_vect)
   // During a homing cycle, lock out and prevent desired axes from moving.
   if (sys.state == STATE_HOMING) { st.step_outbits &= sys.homing_axis_lock; }   
   //在复位循环中，将不涉及复位运动的轴锁住，不让其运动
+
+  if ((sys.state != STATE_HOMING)&&(sys.calibration != 1)) {//不是复位或者校准状态时，启用硬件限位
+  	if (limits_get_state_hardlimits()) {
+  				//print_uint8_base2(limits_get_state_hardlimits());
+			  mc_reset(); // Initiate system kill.
+			  bit_true_atomic(sys_rt_exec_alarm, (EXEC_ALARM_HARD_LIMIT|EXEC_CRITICAL_EVENT)); // Indicate hard limit critical event
+			}
+  	}
+
 
   st.step_count--; // Decrement step events count 
   if (st.step_count == 0) {

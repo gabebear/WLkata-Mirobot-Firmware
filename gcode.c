@@ -349,13 +349,18 @@ uint8_t gc_execute_line(char *line)
 		 case 40://开始校准，清零原来复位参数
 		 	printString("M40: Start calibration, clear the original reset parameters.\r\n");
 			start_calibration();
-		 
+		    sys.calibration = 1;
 		 	break;
 
 		case 41://将校准得到的复位参数写入EEPROM中
 		 	printString("M41: Write the reset reset parameters to the EEPROM.\r\n");
 			write_reset_distance();
-		 
+			sys.calibration = 0;
+		 	break;
+
+		case 50://解除轴锁定状态
+		 	printString("M50: Unlock each axis.\r\n");
+			sys.reset_homing = 1;
 		 	break;
 		 	
           default: FAIL(STATUS_GCODE_UNSUPPORTED_COMMAND); // [Unsupported M command]
@@ -548,7 +553,7 @@ uint8_t gc_execute_line(char *line)
   // [12. Set length units ]: N/A
   // Pre-convert XYZ coordinate values to millimeters, if applicable.
   uint8_t idx;
-  if (gc_block.modal.units == UNITS_MODE_INCHES) {
+  if (gc_block.modal.units == UNITS_MODE_INCHES) {//英寸模式
     for (idx=0; idx<N_AXIS; idx++) { // Axes indices are consistent, so loop may be used.
       if (bit_istrue(axis_words,bit(idx)) ) {
         gc_block.values.xyz[idx] *= MM_PER_INCH;
@@ -1488,10 +1493,31 @@ uint8_t gc_execute_line(char *line)
       if(coordinate_mode == gc_state.coord_mode )//笛卡尔模式
 	  	//memcpy(gc_state.position_Cartesian, gc_block.values.xyz, sizeof(gc_block.values.xyz));
 		//笛卡尔模式gc_block.values.xyz会在逆解函数中被变成角度!!!!!
-	  memcpy(gc_state.position_Cartesian, gc_block.values.xyz, sizeof(gc_block.values.xyz));
+      	{
+      	//memcpy(gc_state.position_Cartesian_backup, gc_state.position_Cartesian, sizeof(gc_state.position_Cartesian));
+	  		
+				memcpy(gc_state.position_Cartesian, gc_block.values.xyz, sizeof(gc_block.values.xyz));
+		
+			}
 	  else//角度模式
-      memcpy(gc_state.position, gc_block.values.xyz, sizeof(gc_block.values.xyz)); // gc_state.position[] = gc_block.values.xyz[]
-      
+	  	{
+	  	printString("\r\ntest point 1");
+	  	//memcpy(gc_state.position_backup, gc_state.position, sizeof(gc_state.position));//为了软限位把原来的值备份起来，如果软限位被触发，则用来恢复原来的值
+	  	if(sys.soft_limit_trigger_flag == 8)//本次没有软限位发生！注意mc_line中的软限位判断在此之前进行！
+      		{memcpy(gc_state.position, gc_block.values.xyz, sizeof(gc_block.values.xyz));} // gc_state.position[] = gc_block.values.xyz[]
+			else//有软限位发生
+				{
+             for (idx=0; idx<N_AXIS; idx++) {//遍历各轴,排除软限位的轴不更新
+                if(idx == sys.soft_limit_trigger_flag)
+					{continue;}
+				gc_state.position[idx] = gc_block.values.xyz[idx];
+				
+             	}
+			}
+		//printString("\r\ngc_state.position");printFloat(gc_state.position[4], 2);
+		//printString("\r\ngc_state.position_backup");printFloat(gc_state.position_backup[4], 2);
+		//printString("\r\ngc_block.values.xyz");printFloat(gc_block.values.xyz[4], 2);
+	  		}
     }
   }
   

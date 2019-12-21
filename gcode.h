@@ -196,9 +196,15 @@ typedef struct {
   uint8_t tool;                 // Tracks tool number. NOT USED.
   int32_t line_number;          // Last line number sent
 
-  float position[N_AXIS];       // Where the interpreter considers the tool to be at this point in the code
+  float position[N_AXIS];       // 用来保存G代码解析器上一次的值，用来进行角度增量操作
 
   float position_Cartesian[N_AXIS];//保存笛卡尔坐标值，本来用的N_Cartesian编号，但是发现不好赋值！
+                                   //用来保存G代码解析器上一次的值，用来进行笛卡尔增量操作
+  //float position_backup[N_AXIS];   // 用来保存G代码解析器上一次的值，用来进行角度增量操作（备份用来软限位）
+
+  //float position_Cartesian_backup[N_AXIS];//保存笛卡尔坐标值，本来用的N_Cartesian编号，但是发现不好赋值！
+                                   //用来保存G代码解析器上一次的值，用来进行笛卡尔增量操作（备份用来软限位）
+  
 
   float coord_system[N_AXIS];   // Current work coordinate system (G54+). Stores offset from absolute machine
                                 // position in mm. Loaded from EEPROM when called.  
