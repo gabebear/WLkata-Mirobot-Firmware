@@ -50,21 +50,21 @@
   #define DEFAULT_E_ACCELERATION 200.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
   #define DEFAULT_F_ACCELERATION 200.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
   #define DEFAULT_G_ACCELERATION 300.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_A_MAX_TRAVEL 360.0 // mm
+  #define DEFAULT_A_MAX_TRAVEL 350.0 // mm
   #define DEFAULT_B_MAX_TRAVEL 40.0 // mm
-  #define DEFAULT_C_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_D_MAX_TRAVEL 200.0 // mm
-  #define DEFAULT_E_MAX_TRAVEL 150.0 // mm
+  #define DEFAULT_C_MAX_TRAVEL 360.0 // mm
+  #define DEFAULT_D_MAX_TRAVEL 1000.0 // mm
+  #define DEFAULT_E_MAX_TRAVEL 160.0 // mm
   #define DEFAULT_F_MAX_TRAVEL 70.0 // mm
-  #define DEFAULT_G_MAX_TRAVEL 70.0 // mm
+  #define DEFAULT_G_MAX_TRAVEL 60.0 // mm
 
-  #define DEFAULT_A_MIN_TRAVEL 360
+  #define DEFAULT_A_MIN_TRAVEL 350
   #define DEFAULT_B_MIN_TRAVEL 205
-  #define DEFAULT_C_MIN_TRAVEL 200
-  #define DEFAULT_D_MIN_TRAVEL 200
-  #define DEFAULT_E_MIN_TRAVEL 120
-  #define DEFAULT_F_MIN_TRAVEL 40
-  #define DEFAULT_G_MIN_TRAVEL 150
+  #define DEFAULT_C_MIN_TRAVEL 360
+  #define DEFAULT_D_MIN_TRAVEL 1000
+  #define DEFAULT_E_MIN_TRAVEL 100
+  #define DEFAULT_F_MIN_TRAVEL 30
+  #define DEFAULT_G_MIN_TRAVEL 170
   
   #define DEFAULT_STEP_PULSE_MICROSECONDS 10
   #define DEFAULT_STEPPING_INVERT_MASK 0
@@ -77,7 +77,7 @@
   #define DEFAULT_INVERT_ST_ENABLE 0 // false
   #define DEFAULT_INVERT_LIMIT_PINS 0 // false
   #define DEFAULT_SOFT_LIMIT_ENABLE 1 // false
-  #define DEFAULT_HARD_LIMIT_ENABLE 0  // false
+  #define DEFAULT_HARD_LIMIT_ENABLE 1  // false
   #define DEFAULT_HOMING_ENABLE 1  // 
   #define DEFAULT_HOMING_DIR_MASK 48 // move positive dir
   #define DEFAULT_HOMING_FEED_RATE 1500.0 // mm/min

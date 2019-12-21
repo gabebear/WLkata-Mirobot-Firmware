@@ -452,7 +452,7 @@ ISR(TIMER1_COMPA_vect)
   if (sys.state == STATE_HOMING) { st.step_outbits &= sys.homing_axis_lock; }   
   //在复位循环中，将不涉及复位运动的轴锁住，不让其运动
 
-  if ((sys.state != STATE_HOMING)&&(sys.calibration != 1)) {//不是复位或者校准状态时，启用硬件限位
+  if ((sys.state != STATE_HOMING)&&(sys.calibration != 1)&&(bit_istrue(settings.flags,BITFLAG_HARD_LIMIT_ENABLE))) {//不是复位或者校准状态时，启用硬件限位
   	if (limits_get_state_hardlimits()) {
   				//print_uint8_base2(limits_get_state_hardlimits());
 			  mc_reset(); // Initiate system kill.

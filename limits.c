@@ -41,12 +41,12 @@ void limits_init()
   #endif
 
 //由于PCINT中断只能在B端口起作用，而我们用的是D端口，因此无法使用引脚硬件中断！只能寻求软限位
-  if (bit_istrue(settings.flags,BITFLAG_HARD_LIMIT_ENABLE)) {//如果开启了硬件限位
+ /* if (bit_istrue(settings.flags,BITFLAG_HARD_LIMIT_ENABLE)) {//如果开启了硬件限位
     LIMIT_PCMSK |= LIMIT_MASK_E;//LIMIT_MASK; // Enable specific pins of the Pin Change Interrupt
     PCICR |= (1 << LIMIT_INT); // Enable Pin Change Interrupt
   } else {
     limits_disable(); 
-  }
+  }*/
   
   #ifdef ENABLE_SOFTWARE_DEBOUNCE//使用看门狗来给限位开关做软件消抖
     MCUSR &= ~(1<<WDRF);

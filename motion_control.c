@@ -42,7 +42,7 @@
   // from everywhere in Grbl.
     if (sys.reset_homing == 0) //增加的软件reset后必须homing的操作
   	{ 
-	  printString("\r\nLocked status of each axis!");
+	  printString("\r\nLocked status of each axis!\r\n");
       return;
      }
   
@@ -71,7 +71,7 @@
 		default:
 		    printString("error");break;
 	  	}
-		
+		printString("\r\n");
 	  
       return;    //软限位起作用
 	}

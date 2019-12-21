@@ -198,7 +198,7 @@ void report_robot_length_message()
   printInteger(Cartesian_Rz);
 
   if(settings.robot_qinnew.use_reset_pos)
-		printString("\r\nUsing reset pos!");
+		printString("\r\nUsing reset pos!\r\n");
 
   #ifdef _use_compensation_
 		printString("\r\nUsing compensation in X axis:");

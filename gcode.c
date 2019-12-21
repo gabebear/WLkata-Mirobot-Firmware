@@ -1494,14 +1494,20 @@ uint8_t gc_execute_line(char *line)
 	  	//memcpy(gc_state.position_Cartesian, gc_block.values.xyz, sizeof(gc_block.values.xyz));
 		//笛卡尔模式gc_block.values.xyz会在逆解函数中被变成角度!!!!!
       	{
-      	//memcpy(gc_state.position_Cartesian_backup, gc_state.position_Cartesian, sizeof(gc_state.position_Cartesian));
-	  		
-				memcpy(gc_state.position_Cartesian, gc_block.values.xyz, sizeof(gc_block.values.xyz));
-		
+      	if(0 == settings.robot_qinnew.use_compensation)//如果没有插补
+                  	{
+                  		if(sys.soft_limit_trigger_flag == 8)//如果没有软限位被触发
+						{memcpy(gc_state.position_Cartesian, gc_block.values.xyz, sizeof(gc_block.values.xyz));}
+						else 
+						{}
+      				}else
+                  			{
+							memcpy(gc_state.position_Cartesian, gc_block.values.xyz, sizeof(gc_block.values.xyz));//如果有插补先不做处理！
+							}
 			}
+		
 	  else//角度模式
 	  	{
-	  	printString("\r\ntest point 1");
 	  	//memcpy(gc_state.position_backup, gc_state.position, sizeof(gc_state.position));//为了软限位把原来的值备份起来，如果软限位被触发，则用来恢复原来的值
 	  	if(sys.soft_limit_trigger_flag == 8)//本次没有软限位发生！注意mc_line中的软限位判断在此之前进行！
       		{memcpy(gc_state.position, gc_block.values.xyz, sizeof(gc_block.values.xyz));} // gc_state.position[] = gc_block.values.xyz[]

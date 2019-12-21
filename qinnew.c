@@ -93,11 +93,11 @@ double THE2COMP(double xtip,double ytip,double ztip,double theta1,double zeta , 
 // JOINT ANGLESLIMIT FUNCTION
 double conversion(double theta,double upperlimit,double lowerlimit)
 {
-    if(theta > upperlimit * pi / 180)
+    /*if(theta > upperlimit * pi / 180)
         return OUTANGLIMIT;      // OUT = (' THE SOLUTION OUT OF JOINT ANGLE LIMIT ');
     else if(theta < lowerlimit * pi / 180)
         return OUTANGLIMIT;      //OUT = (' THE SOLUTION OUT OF JOINT ANGLE LIMIT ');
-    else
+    else*/
         return (theta * 180 / pi);
 }
 
@@ -392,7 +392,7 @@ void Inverse(double x_wrist,double y_wrist,double z_wrist,double alpha,double be
 if((THETA1 == 1000)||(THETA1 == 1001)||(THETA2i == 1000)||(THETA2i == 1001)||(theta33 == 1000)||(THETA33 == 1001)||\
 	(THETA4 == 1000)||(THETA4 == 1001)||(THETA5 == 1000)||(THETA5 == 1001)||(THETA6 == 1000)||(THETA6 == 1001))
 	{
-	printString("\r\nThere is one angle out of limit!!!");
+	printString("\r\nThere is one angle out of limit!!!\r\n");
 	return;
 	}
 
