@@ -455,7 +455,7 @@ ISR(TIMER1_COMPA_vect)
   if ((sys.state != STATE_HOMING)&&(sys.calibration != 1)&&(bit_istrue(settings.flags,BITFLAG_HARD_LIMIT_ENABLE))) {//不是复位或者校准状态时，启用硬件限位
 	sys.hard_limit_trigger_flag = limits_get_state_hardlimits();
 	if (sys.hard_limit_trigger_flag) {
-  			 print_uint8_base2(sys.hard_limit_trigger_flag);
+  			  print_uint8_base2(sys.hard_limit_trigger_flag);
 			  mc_reset(); // Initiate system kill.
 			  bit_true_atomic(sys_rt_exec_alarm, (EXEC_ALARM_HARD_LIMIT|EXEC_CRITICAL_EVENT)); // Indicate hard limit critical event
 			}

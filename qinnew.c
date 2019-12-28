@@ -41,7 +41,7 @@ void MatrixMult(double *out, double *m1, double *m2, int dim)   // 矩阵乘法
   }
 }
 //---------------------------------------------------------------------------------------------------------
-char            printfbuf[500];             // 打印缓冲区
+//char            printfbuf[500];             // 打印缓冲区
 
 #define pi          (3.1415926)     /* 圆周率 */
 #define NOSOLUTION  (1000)
