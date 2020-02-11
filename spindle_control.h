@@ -18,6 +18,15 @@
   You should have received a copy of the GNU General Public License
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */ 
+/**
+  ******************************************************************************
+  * @file	spindle_control.h
+  * @Modified by Thor Zhou	
+  * @email	zhoudongxv@yeah.net
+  * @date	2019-12
+  ******************************************************************************
+  */
+
 
 #ifndef spindle_control_h
 #define spindle_control_h 

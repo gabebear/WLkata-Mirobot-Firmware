@@ -310,12 +310,7 @@ uint8_t plan_check_full_buffer()
     #else
       target_steps[idx] = lround(target[idx]*settings.steps_per_mm[idx]);
       block->steps[idx] = labs(target_steps[idx]-pl.position[idx]);
-	//  printString("\r\nsteps_axis");printInteger(idx);printString(":");
-	//  printFloat(block->steps[idx]/settings.steps_per_mm[idx],2);
-	 // printString("\r\n");
-	//  printString("pl.position");printInteger(idx);printString(":");
-	//  printFloat(pl.position[idx]/settings.steps_per_mm[idx],2);
-	//  printString("\r\n");//输出plan_buffer_line每一段的具体调试信息！！！论文可能有用
+
 	  
       block->step_event_count = max(block->step_event_count, block->steps[idx]);
       delta_mm = (target_steps[idx] - pl.position[idx])/settings.steps_per_mm[idx];
@@ -434,7 +429,6 @@ uint8_t plan_check_full_buffer()
 
 
 // Reset the planner position vectors. Called by the system abort/initialization routine.
-//重置规划器位置矢量。由系统中止/初始化例程调用。
 void plan_sync_position()
 {
   // TODO: For motor configurations not in the same coordinate frame as the machine position,

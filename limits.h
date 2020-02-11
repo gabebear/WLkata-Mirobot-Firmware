@@ -32,7 +32,7 @@ void limits_disable();
 // Returns limit state as a bit-wise uint8 variable.
 uint8_t limits_get_state();
 
-//去掉第五轴后的轴状态检测
+
 uint8_t limits_get_state_hardlimits();
 
 // Perform one portion of the homing cycle based on the input settings.

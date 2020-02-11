@@ -91,7 +91,6 @@ typedef struct {
   uint8_t execute_step;     // Flags step execution for each interrupt.
   uint8_t step_pulse_time;  // Step pulse reset time after step rise
   uint8_t step_outbits;         // The next stepping-bits to be output
-                             //step_outbits以掩码的形式指示下一次要输出一个脉冲的引脚是谁
   uint8_t dir_outbits;
   #ifdef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
     uint32_t steps[N_AXIS];
@@ -217,23 +216,20 @@ void st_wake_up()
 void st_go_idle() 
 {
   // Disable Stepper Driver Interrupt. Allow Stepper Port Reset Interrupt to finish, if active.
-  //禁用步进驱动程序中断。 如果激活，则允许步进端口复位中断完成。
-  TIMSK1 &= ~(1<<OCIE1A); // Disable Timer1 interrupt//禁用Timer1中断
-  TCCR1B = (TCCR1B & ~((1<<CS12) | (1<<CS11))) | (1<<CS10); // Reset clock to no prescaling.//将时钟重置为无预定标。
+  TIMSK1 &= ~(1<<OCIE1A); // Disable Timer1 interrupt
+  TCCR1B = (TCCR1B & ~((1<<CS12) | (1<<CS11))) | (1<<CS10); // Reset clock to no prescaling.
   busy = false;
   
   // Set stepper driver idle state, disabled or enabled, depending on settings and circumstances.
-  //根据设置和环境设置步进驱动程序空闲状态，禁用或启用。
   bool pin_state = false; // Keep enabled.
   if (((settings.stepper_idle_lock_time != 0xff)    || sys_rt_exec_alarm) && sys.state != STATE_HOMING) {
     // Force stepper dwell to lock axes for a defined amount of time to ensure the axes come to a complete
     // stop and not drift from residual inertial forces at the end of the last movement.
-    //强制步进器停留以锁定轴一段规定的时间，以确保轴完全停止，并且不会在最后一次运动结束时偏离残余惯性力。
     delay_ms(settings.stepper_idle_lock_time);
-    pin_state = true; // Override. Disable steppers.//覆盖 禁用步进器。
+    pin_state = true; // Override. Disable steppers.
   }
   if (bit_istrue(settings.flags,BITFLAG_INVERT_ST_ENABLE)) { pin_state = !pin_state; } // Apply pin invert.
-  if (pin_state) { STEPPERS_DISABLE_PORT |= (1<<STEPPERS_DISABLE_BIT); }//所有轴失能
+  if (pin_state) { STEPPERS_DISABLE_PORT |= (1<<STEPPERS_DISABLE_BIT); }
   else { STEPPERS_DISABLE_PORT &= ~(1<<STEPPERS_DISABLE_BIT); }
 }
 
@@ -450,9 +446,8 @@ ISR(TIMER1_COMPA_vect)
   } 
   // During a homing cycle, lock out and prevent desired axes from moving.
   if (sys.state == STATE_HOMING) { st.step_outbits &= sys.homing_axis_lock; }   
-  //在复位循环中，将不涉及复位运动的轴锁住，不让其运动
 
-  if ((sys.state != STATE_HOMING)&&(sys.calibration != 1)&&(bit_istrue(settings.flags,BITFLAG_HARD_LIMIT_ENABLE))) {//不是复位或者校准状态时，启用硬件限位
+  if ((sys.state != STATE_HOMING)&&(sys.calibration != 1)&&(bit_istrue(settings.flags,BITFLAG_HARD_LIMIT_ENABLE))) {
 	sys.hard_limit_trigger_flag = limits_get_state_hardlimits();
 	if (sys.hard_limit_trigger_flag) {
   			  print_uint8_base2(sys.hard_limit_trigger_flag);
@@ -611,13 +606,8 @@ void st_prep_buffer()
 {
 
   if (sys.state & (STATE_HOLD|STATE_MOTION_CANCEL|STATE_SAFETY_DOOR)) { 
-  	//发生暂停以后程序就卡在这里，一直返回！！！！
     // Check if we still need to generate more segments for a motion suspend.
     if (prep.current_speed == 0.0) { 
-		//plan_reset();//增加在发送~后，清空planner缓冲区
-		//st_reset();
-		//plan_sync_position();//同步规划器和系统实际位置
-	    //gc_sync_position();//同步g代码解释器位置和系统实际位置
 	return; } // Nothing to do. Bail.
   }
   
@@ -692,7 +682,6 @@ void st_prep_buffer()
         // Compute velocity profile parameters for a feed hold in-progress. This profile overrides
         // the planner block profile, enforcing a deceleration to zero speed.
 
-		printString_debug("\r\n /////////TEST_POINT_2/////////////////////////");
 
 		prep.ramp_type = RAMP_DECEL;
         // Compute decelerate distance relative to end of block.

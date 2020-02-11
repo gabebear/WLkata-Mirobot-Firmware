@@ -26,7 +26,19 @@
   methods to accomodate their needs.
 */
 
+/**
+  ******************************************************************************
+  * @file	report.c
+  * @Modified by Thor Zhou	
+  * @email	zhoudongxv@yeah.net
+  * @date	2019-12
+  ******************************************************************************
+  */
+
 #include "grbl.h"
+
+
+
 //#include "QProtocalDefine.h"
 
 // Handles the primary confirmation protocol response for streaming interfaces and human-feedback.
@@ -150,19 +162,13 @@ void report_init_message()
 {
   //printPgmString(PSTR("\r\nQinnew Robot " QINNEW_VERSION " based on Grbl " GRBL_VERSION " ['$' for help]\r\n"));
   printPgmString(PSTR("\r\nGrbl " GRBL_VERSION " ['$' for help]\r\n"));
-  printPgmString(PSTR("\r\nQinnew Robot " QINNEW_VERSION " based on Grbl " GRBL_VERSION " ['$' for help]\r\n"));
+  printPgmString(PSTR("\r\nQinnew Robot " QINNEW_VERSION " based on Grbl " GRBL_VERSION " ['$' for help--Thor Zhou]\r\n"));
 }
 
 void report_robot_length_message()
 {
 
- //TODO:把臂长等参数加入到指令系统当中，使可以用串口命令台修改，然后保存入EEPROM中
- /* printPgmString(PSTR("\r\nD1: " _D1_ " [mm]\r\n"));
-  printPgmString(PSTR("\r\nA1: " settings.robot_qinnew.A1 " [mm]\r\n"));
-  printPgmString(PSTR("\r\nA2: " settings.robot_qinnew.A2 " [mm]\r\n"));
-  printPgmString(PSTR("\r\nA3: " settings.robot_qinnew.A3 " [mm]\r\n"));
-  printPgmString(PSTR("\r\nD4: " settings.robot_qinnew.D4 " [mm]\r\n"));
-  printPgmString(PSTR("\r\nL: " settings.robot_qinnew.L " [mm]\r\n"));*/
+
 
   printString("\r\nD1: ");
   printInteger(settings.robot_qinnew.D1);
@@ -281,23 +287,8 @@ void report_grbl_settings() {
     printPgmString(PSTR(" (homing debounce, msec)\r\n$27=")); printFloat_SettingValue(settings.homing_pulloff);
     printPgmString(PSTR(" (homing pull-off, mm)\r\n$28="));print_uint8_base10(settings.homing_pos_dir_mask);
 	printPgmString(PSTR(" (homing pos dir invert mask:"));print_uint8_base2(settings.homing_pos_dir_mask);
-	printPgmString(PSTR(")\r\nSettings for robot:\r\n"));//	)\r\nSettings for robot:\r\n")); 
-	printPgmString(PSTR("$29=")); printFloat_SettingValue(settings.robot_qinnew.D1);
-	printPgmString(PSTR(" (D1 Link length)\r\n$30=")); printFloat_SettingValue(settings.robot_qinnew.A1);
-	printPgmString(PSTR(" (A1 Link length)\r\n$31=")); printFloat_SettingValue(settings.robot_qinnew.A2);
-	printPgmString(PSTR(" (A2 Link length)\r\n$32=")); printFloat_SettingValue(settings.robot_qinnew.A3);
-	printPgmString(PSTR(" (A3 Link length)\r\n$33=")); printFloat_SettingValue(settings.robot_qinnew.D4);
-	printPgmString(PSTR(" (D4 Link length)\r\n$34=")); printFloat_SettingValue(settings.robot_qinnew.L);
-	printPgmString(PSTR(" (L Link length)\r\n$35=")); printFloat_SettingValue(settings.robot_qinnew.use_interpolation);
-	printPgmString(PSTR(" (Use interpolation or not)\r\n$36=")); print_uint8_base10(settings.robot_qinnew.interpolation_num);
-	printPgmString(PSTR(" (Number of interpolation)\r\n$37=")); print_uint8_base10(settings.robot_qinnew.use_compensation);
-	printPgmString(PSTR(" (Use compensation or not)\r\n$38=")); print_uint8_base10(settings.robot_qinnew.compensation_num);
-	printPgmString(PSTR(" (Number of compensation)\r\n$39=")); print_uint8_base10(settings.robot_qinnew.use_reset_pos);
-	printPgmString(PSTR(" (Use reset_pos or not)\r\n$40=")); print_uint8_base10(settings.robot_qinnew.use_Back_to_text);
-	printPgmString(PSTR(" (Use back to text or not)\r\n$41=")); printFloat_SettingValue(settings.robot_qinnew.offset[E_AXIS]);
-	printPgmString(PSTR(" (X offset)\r\n$42=")); printFloat_SettingValue(settings.robot_qinnew.offset[F_AXIS]);
-	printPgmString(PSTR(" (Y offset)\r\n$43=")); printFloat_SettingValue(settings.robot_qinnew.offset[G_AXIS]);
-	printPgmString(PSTR(" (Z offset)\r\n"));
+	printPgmString(PSTR(")\r\n"));
+	
   #endif
   
   // Print axis settings
@@ -484,7 +475,7 @@ void report_build_info(char *line)
 {
   printPgmString(PSTR("[" GRBL_VERSION "." GRBL_VERSION_BUILD ":"));
   printString(line);
-  printPgmString(PSTR("]\r\n"));
+  printPgmString(PSTR("--ZDX(20200210)]\r\n"));
 }
 
 
@@ -526,7 +517,6 @@ void report_realtime_status()
   }
  
   // If reporting a position, convert the current step count (current_position) to millimeters.
-  //如果报告位置，将当前步数（current_position）转换为毫米。
   if (bit_istrue(settings.status_report_mask,(BITFLAG_RT_STATUS_MACHINE_POSITION | BITFLAG_RT_STATUS_WORK_POSITION))) {
     system_convert_array_steps_to_mpos(print_position,current_position);
   }
@@ -541,26 +531,13 @@ void report_realtime_status()
     }
 
 	printPgmString(PSTR(",Cartesian coordinate(XYZ RxRyRz):")); 
-	Forward(print_position);//不论何时，sys.position中保存的都是角度的绝对位置值
+	Forward(print_position);
 	for (idx=0; idx< N_Cartesian; idx++) {
       printFloat_CoordValue(sys.position_Cartesian[idx]);
       if (idx < (N_Cartesian-1)) { printPgmString(PSTR(",")); }
 	
   }
 }
-  // Report work position
- /* if (bit_istrue(settings.status_report_mask,BITFLAG_RT_STATUS_WORK_POSITION)) {
-    printPgmString(PSTR(",WPos:")); 
-    for (idx=0; idx< N_AXIS; idx++) {
-      // Apply work coordinate offsets and tool length offset to current position.
-      print_position[idx] -= gc_state.coord_system[idx]+gc_state.coord_offset[idx];
-      if (idx == TOOL_LENGTH_OFFSET_AXIS) { print_position[idx] -= gc_state.tool_length_offset; }    
-      printFloat_CoordValue(print_position[idx]);
-      if (idx < (N_AXIS-1)) { printPgmString(PSTR(",")); }
-    }
-  }*/   //机器人模式下与上边的mpos相同，都是关节角度值因此先注释掉不输出！
-
-	//返回两路PWM气泵和阀状态
 
   if (bit_istrue(settings.status_report_mask,BITFLAG_RT_STATUS_PUMP_PWM)) {
     printPgmString(PSTR(",Pump PWM:"));

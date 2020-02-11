@@ -24,6 +24,14 @@
    a good starting point as you get to know your machine and tweak the settings for your
    nefarious needs. */
 
+/**
+  ******************************************************************************
+  * @file	defaults_generic.h
+  * @Modified by Thor Zhou	
+  * @date	2019-12
+  ******************************************************************************
+  */
+
 #ifndef defaults_h
 #define defaults_h
 
@@ -40,13 +48,13 @@
   #define DEFAULT_B_MAX_RATE 1500.0 // mm/min
   #define DEFAULT_C_MAX_RATE 2500.0 // mm/min
   #define DEFAULT_D_MAX_RATE 500.0 // mm/min
-  #define DEFAULT_E_MAX_RATE 1800.0 // mm/min
-  #define DEFAULT_F_MAX_RATE 3000.0 // mm/min
-  #define DEFAULT_G_MAX_RATE 1800.0 // mm/min
+  #define DEFAULT_E_MAX_RATE 2000.0 // mm/min
+  #define DEFAULT_F_MAX_RATE 2000.0 // mm/min
+  #define DEFAULT_G_MAX_RATE 2000.0 // mm/min
   #define DEFAULT_A_ACCELERATION 50.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
   #define DEFAULT_B_ACCELERATION 50.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
   #define DEFAULT_C_ACCELERATION 50.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
-  #define DEFAULT_D_ACCELERATION 50*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
+  #define DEFAULT_D_ACCELERATION 50.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
   #define DEFAULT_E_ACCELERATION 50.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
   #define DEFAULT_F_ACCELERATION 50.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
   #define DEFAULT_G_ACCELERATION 50.0*60*60 // 10*60*60 mm/min^2 = 10 mm/sec^2
@@ -86,7 +94,7 @@
   #define DEFAULT_HOMING_PULLOFF 12.0 // mm
 
 
-  #define DEFAULTS_RESET_A 45.0//自己增加的复位值
+  #define DEFAULTS_RESET_A 45.0
   #define DEFAULTS_RESET_B 45.0
   #define DEFAULTS_RESET_C 0
   #define DEFAULTS_RESET_D 0
@@ -94,7 +102,7 @@
   #define DEFAULTS_RESET_F 45.0
   #define DEFAULTS_RESET_G 45.0
 
-  #define DEFAULT_HOMING_POS_MASK 65 //复位以后在运动的方向位掩码
+  #define DEFAULT_HOMING_POS_MASK 65 
 
   #define DEFAULTS_D1 78.0
   #define DEFAULTS_A1 32.0

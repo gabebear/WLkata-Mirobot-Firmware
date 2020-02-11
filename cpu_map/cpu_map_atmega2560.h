@@ -20,6 +20,15 @@
 
 /* This cpu_map file serves as a central pin mapping settings file for AVR Mega 2560 */
 
+/**
+  ******************************************************************************
+  * @file	cpu_map_atmega2560.h
+  * @Modified by Thor Zhou	
+  * @email	zhoudongxv@yeah.net
+  * @date	2019-12
+  ******************************************************************************
+  */
+
 
 #ifdef GRBL_PLATFORM
 #error "cpu_map already defined: GRBL_PLATFORM=" GRBL_PLATFORM
@@ -36,13 +45,6 @@
 #define SERIAL2_UDRE USART2_UDRE_vect
 
 
-// Increase Buffers to make use of extra SRAM
-//#define RX_BUFFER_SIZE		256
-//#define TX_BUFFER_SIZE		128
-//#define BLOCK_BUFFER_SIZE	36
-//#define LINE_BUFFER_SIZE	100
-
-//扩展按键针脚初始化
 #define BUTTON_RESET_DDR      DDRJ
 #define BUTTON_RESET_PORT     PORTJ
 #define BUTTON_RESET_PIN      PINJ
@@ -50,7 +52,6 @@
 #define BUTTON_RESET_BIT  1
 #define BUTTON_RESET_MASK (1<<BUTTON_RESET_BIT)
 
-// Define step pulse output pins. NOTE: All step bit pins must be on the same port.
 #define STEP_DDR_A      DDRA
 #define STEP_PORT_A     PORTA
 #define STEP_PIN_A      PINA
@@ -81,7 +82,6 @@
 #define STEP_MASK_ALL ((1<<X_STEP_BIT_T)|(1<<Y_STEP_BIT_T)|(1<<Z_STEP_BIT_T)|(1<<A_STEP_BIT_T)|(1<<B_STEP_BIT_T)|(1<<C_STEP_BIT_T)|(1<<D_STEP_BIT_T)) // All step bits
 
 
-// Define step direction output pins. NOTE: All direction pins must be on the same port.
 #define DIR_DDR_A     DDRA
 #define DIR_PORT_A    PORTA
 #define DIR_PIN_A     PINA
@@ -110,41 +110,28 @@
 #define D_DIR_BIT   A_DIR3 
 #define DIRECTION_MASK_ALL ((1<<X_DIR_BIT)|(1<<Y_DIR_BIT)|(1<<Z_DIR_BIT)|(1<<A_DIR_BIT)|(1<<B_DIR_BIT)|(1<<C_DIR_BIT)|(1<<D_DIR_BIT)) // All direction bits
 
-// Define stepper driver enable/disable output pin.
 #define STEPPERS_DISABLE_DDR   DDRG
 #define STEPPERS_DISABLE_PORT  PORTG
-#define STEPPERS_DISABLE_BIT   1 // MEGA2560 Digital Pin 40
+#define STEPPERS_DISABLE_BIT   1 
 #define STEPPERS_DISABLE_MASK (1<<STEPPERS_DISABLE_BIT)
 
-// Define homing/hard limit switch input pins and limit interrupt vectors.
-// NOTE: All limit bit pins must be on the same port
 #define LIMIT_DDR       DDRD
 
 #define LIMIT_PORT      PORTD
 #define LIMIT_PIN       PIND
 
 
-#define A_LIMIT_BIT     5 // SOPTO4//第二版电路图
-#define B_LIMIT_BIT     6 // SOPTO5
-#define C_LIMIT_BIT     7 // SOPTO6（第一轴的另外一个方向的限位！）
-#define D_LIMIT_BIT     2 // 未用
-#define E_LIMIT_BIT     0 // SOPTO1第一轴开始复位运动的限位
-#define F_LIMIT_BIT     1 // SOPTO2
-#define G_LIMIT_BIT     4 // SOPTO3
+#define A_LIMIT_BIT     5 
+#define B_LIMIT_BIT     6 
+#define C_LIMIT_BIT     7 
+#define D_LIMIT_BIT     2 
+#define E_LIMIT_BIT     0 
+#define F_LIMIT_BIT     1 
+#define G_LIMIT_BIT     4 
 
-/*
-#define A_LIMIT_BIT     2 // SOPTO4//这个顺序是赵家与第一版电路图的
-#define B_LIMIT_BIT     1 // SOPTO5
-#define C_LIMIT_BIT     0 // SOPTO6
-#define D_LIMIT_BIT     4 // 未用
-#define E_LIMIT_BIT     7 // SOPTO1
-#define F_LIMIT_BIT     5 // SOPTO2
-#define G_LIMIT_BIT     3 // SOPTO3
-*/
-																			//PL6_PIN 43对应了SOPT08
-#define LIMIT_INT       PCIE0  // Pin change interrupt enable pin
+#define LIMIT_INT       PCIE0  
 #define LIMIT_INT_vect  PCINT0_vect
-#define LIMIT_PCMSK     PCMSK0 // Pin change interrupt register 设置是否在对应引脚是能引脚中断
+#define LIMIT_PCMSK     PCMSK0 
 #define LIMIT_MASK ((1<<A_LIMIT_BIT)|(1<<B_LIMIT_BIT)|(1<<C_LIMIT_BIT)|(1<<D_LIMIT_BIT)|(1<<E_LIMIT_BIT)|(1<<F_LIMIT_BIT)|(1<<G_LIMIT_BIT)) // All limit bits
 #define LIMIT_MASK_B_C_D_E_F_G ((1<<B_LIMIT_BIT)|(1<<C_LIMIT_BIT)|(1<<D_LIMIT_BIT)|(1<<E_LIMIT_BIT)|(1<<F_LIMIT_BIT)|(1<<G_LIMIT_BIT)) // All limit bits
 #define LIMIT_MASK_E (1<<E_LIMIT_BIT)// All limit bits
@@ -199,7 +186,7 @@
   #define PWM_MAX_VALUE       65535.0
   #define TCCRA_REGISTER		TCCR4A
   #define TCCRB_REGISTER		TCCR4B
-  #define OCR_REGISTER		OCR4B//设置比较值
+  #define OCR_REGISTER		OCR4B
 
   #define COMB_BIT			COM4B1
   #define WAVE0_REGISTER		WGM40
@@ -213,8 +200,6 @@
 #endif // End of VARIABLE_SPINDLE
 
 
-/////////////////////////////新定义的PWM输出引脚//////////////////////////////////////////////////////
-//PWM输出针脚初始化
 #ifdef VARIABLE_SPINDLE_2
 
 #define SPINDLE_PWM_DDR_2      DDRE
@@ -224,7 +209,7 @@
 #define PWM_MAX_VALUE_2		65535.0
 #define TCCRA_REGISTER_2		  TCCR3A
 #define TCCRB_REGISTER_2		  TCCR3B
-#define OCR_REGISTER_2	  OCR3B//设置比较值
+#define OCR_REGISTER_2	  OCR3B
 
 #define COMB_BIT_2		  COM3B1
 #define WAVE0_REGISTER_2		  WGM30

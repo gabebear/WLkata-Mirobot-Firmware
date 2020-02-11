@@ -72,31 +72,31 @@ typedef struct {
   uint8_t abort;                 // System abort flag. Forces exit back to main loop for reset.
   uint8_t state;                 // Tracks the current state of Grbl.
   
-  uint8_t state_last;//增加的上一次状态记录保存
+  uint8_t state_last;
   
   uint8_t suspend;               // System suspend bitflag variable that manages holds, cancels, and safety door.
 
-  uint8_t home_complate_flag;//自己添加的复位运动完成标志
+  uint8_t home_complate_flag;
   
   int32_t position[N_AXIS];      // Real-time machine (aka home) position vector in steps. 
                                  // NOTE: This may need to be a volatile variable, if problems arise.   
-                                 //保存的是以脉冲步数表示的当前各轴绝对位置！！！
+                                 
 
   int32_t probe_position[N_AXIS]; // Last probe position in machine coordinates and steps.
   uint8_t probe_succeeded;        // Tracks if last probing cycle was successful.
   uint8_t homing_axis_lock;       // Locks axes when limits engage. Used as an axis motion mask in the stepper ISR.
-  								////限位发生时锁定轴。 用作步进器ISR中的轴运动掩码。
+  								
 
-  double position_Cartesian[N_Cartesian];//新加入的笛卡尔坐标保存
+  double position_Cartesian[N_Cartesian];
 
   bool sym_homing;//$h与$hh
 
-  bool reset_homing;//软复位后必须机械homing
+  bool reset_homing;
 
-  bool calibration;//是否是校准状态
+  bool calibration;
 
-  uint8_t soft_limit_trigger_flag;//触发软限位轴的轴号
-  uint8_t hard_limit_trigger_flag;//触发软限位轴的轴号
+  uint8_t soft_limit_trigger_flag;
+  uint8_t hard_limit_trigger_flag;
 } system_t;
 extern system_t sys;
 

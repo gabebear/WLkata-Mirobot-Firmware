@@ -19,6 +19,15 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/**
+  ******************************************************************************
+  * @file	gcode.h
+  * @Modified by Thor Zhou	
+  * @date	2019-12-18
+  ******************************************************************************
+  */
+
+
 #ifndef gcode_h
 #define gcode_h
 
@@ -122,7 +131,6 @@
 #define TOOL_LENGTH_OFFSET_CANCEL 0 // G49 (Default: Must be zero)
 #define TOOL_LENGTH_OFFSET_ENABLE_DYNAMIC 1 // G43.1
 
-//设置角度模式或者笛卡尔模式
 #define coordinate_mode 1
 #define angle_mode 0
 
@@ -140,7 +148,7 @@
 #define WORD_P  6
 #define WORD_R  7
 #define WORD_S  8
-#define WORD_E  9//把原来的T改成了E
+#define WORD_E  9
 #define WORD_A  10
 #define WORD_B  11
 #define WORD_C  12
@@ -149,7 +157,7 @@
 #define WORD_Y  15
 #define WORD_Z  16
 
-#define WORD_T 17//去掉这个宏会报错，所以加上，虽然改成了E
+#define WORD_T 17
 
 
 
@@ -172,15 +180,15 @@ typedef struct {
 } gc_modal_t;  
 
 typedef struct {
-  float f;         // Feed  运动速度
+  float f;         // Feed  
   float ijk[3];    // I,J,K Axis arc offsets
   uint8_t l;       // G10 or canned cycles parameters
   int32_t n;       // Line number
   float p;         // G10 or dwell parameters
   // float q;      // G82 peck drilling
   float r;         // Arc radius
-  uint16_t s;         // Spindle speed 第一路PWM输出的PWM值设置
-  uint16_t s_2;       //               第二路PWM输出的PWM值设置
+  uint16_t s;         // Spindle speed 
+  uint16_t s_2;       //               
   uint8_t t;       // Tool selection
   float xyz[7];    // A,B,C,D,E,F,G Translational axes
 } gc_values_t;
@@ -189,21 +197,16 @@ typedef struct {
 typedef struct {
   gc_modal_t modal;
   
-  uint16_t spindle_speed;          // RPM第一路PWM输出
-  uint16_t spindle_speed_2;          // RPM第二路PWM输出
+  uint16_t spindle_speed;          
+  uint16_t spindle_speed_2;         
   
   float feed_rate;              // Millimeters/min
   uint8_t tool;                 // Tracks tool number. NOT USED.
   int32_t line_number;          // Last line number sent
 
-  float position[N_AXIS];       // 用来保存G代码解析器上一次的值，用来进行角度增量操作
+  float position[N_AXIS];       
 
-  float position_Cartesian[N_AXIS];//保存笛卡尔坐标值，本来用的N_Cartesian编号，但是发现不好赋值！
-                                   //用来保存G代码解析器上一次的值，用来进行笛卡尔增量操作
-  //float position_backup[N_AXIS];   // 用来保存G代码解析器上一次的值，用来进行角度增量操作（备份用来软限位）
-
-  //float position_Cartesian_backup[N_AXIS];//保存笛卡尔坐标值，本来用的N_Cartesian编号，但是发现不好赋值！
-                                   //用来保存G代码解析器上一次的值，用来进行笛卡尔增量操作（备份用来软限位）
+  float position_Cartesian[N_AXIS];
   
 
   float coord_system[N_AXIS];   // Current work coordinate system (G54+). Stores offset from absolute machine

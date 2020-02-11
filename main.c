@@ -21,6 +21,13 @@
 
 #include "grbl.h"
 
+/**
+  ******************************************************************************
+  * @file	main.c
+  * @Modified by Thor Zhou	
+  * @date	2019-12
+  ******************************************************************************
+  */
 
 // Declare system global variable structure
 system_t sys; 
@@ -59,12 +66,12 @@ int main(void)
     sys.state = STATE_ALARM;
   #endif
 
-	sys.state_last = STATE_IDLE;//初始化最初的上一次系统状态为空闲状态
+	sys.state_last = STATE_IDLE;
 
-	sys.sym_homing = 0;//初始化复位为多轴复位
-  	sys.reset_homing = 0;//初始化为轴锁定状态
-	sys.calibration = 0;//是否是校准状态标志
-	sys.soft_limit_trigger_flag = 8;//初始化软限位被触发的轴号，8表示无软限位被触发
+	sys.sym_homing = 0;
+  	sys.reset_homing = 0;
+	sys.calibration = 0;
+	sys.soft_limit_trigger_flag = 8;
 	sys.hard_limit_trigger_flag = 0;
   // Grbl initialization loop upon power-up or a system abort. For the latter, all processes
   // will return to this loop to be cleanly re-initialized.
@@ -81,7 +88,7 @@ int main(void)
     gc_init(); // Set g-code parser to default state
     spindle_init();
 #ifdef VARIABLE_SPINDLE_2
-	spindle_init_2();//第二路PWM的输出
+	spindle_init_2();
 #endif
     coolant_init();
     limits_init(); 
@@ -90,8 +97,8 @@ int main(void)
     st_reset(); // Clear stepper subsystem variables.
 
     // Sync cleared gcode and planner positions to current system position.
-    plan_sync_position();//pl.position与sys.position同步
-    gc_sync_position();//gc_state.position与sys.position同步
+    plan_sync_position();
+    gc_sync_position();
 
     // Reset system variables.
     sys.abort = false;
@@ -107,10 +114,9 @@ int main(void)
 	sys.position_Cartesian[RY_Cartesian] = Cartesian_Ry;//0;
 	sys.position_Cartesian[RZ_Cartesian] = Cartesian_Rz;//0;
 
-	//use_interpolation = 0;//是否使用插补，0为不使用，后期写入EEPROM指令当中
-	sys.home_complate_flag = 0;//初始化复位完成标志为假
+	sys.home_complate_flag = 0;
 
-    reset_button_init();//reset扩展板按键初始化
+    reset_button_init();
 	
     // Start Grbl main loop. Processes program inputs and executes them.
     protocol_main_loop();

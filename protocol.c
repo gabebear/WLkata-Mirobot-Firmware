@@ -19,6 +19,15 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/**
+  ******************************************************************************
+  * @file	protocol.c
+  * @Modified by Thor Zhou	
+  * @email	zhoudongxv@yeah.net
+  * @date	2019-12
+  ******************************************************************************
+  */
+
 #include "grbl.h"
 
 // Define different comment types for pre-parsing.
@@ -73,8 +82,7 @@ void protocol_main_loop()
   // Print welcome message   
   report_init_message();
   
-  report_robot_length_message();//qinnew：增加的输出机械臂臂长的
-
+  report_robot_length_message();
   // Check for and report alarm state after a reset, error, or an initial power up.
   if (sys.state == STATE_ALARM) {
     report_feedback_message(MESSAGE_ALARM_LOCK); 
@@ -131,7 +139,6 @@ void protocol_main_loop()
             // Block delete NOT SUPPORTED. Ignore character.
             // NOTE: If supported, would simply need to check the system if block delete is enabled.
           } else if (c <= '\0') {
-            //\0去掉Ignore character.
 		  } else if (c == '(') {
             // Enable comments flag and ignore all characters until ')' or EOL.
             // NOTE: This doesn't follow the NIST definition exactly, but is good enough for now.
@@ -164,7 +171,6 @@ void protocol_main_loop()
       }
     }
 
-	//检测外部reset按键状态
 	reset_button_check();
 	
     // If there are no more characters in the serial read buffer to be processed and executed,
@@ -285,7 +291,6 @@ void protocol_execute_realtime()
         if (rt_exec & EXEC_FEED_HOLD) {
           // Block SAFETY_DOOR state from prematurely changing back to HOLD.
           if (bit_isfalse(sys.state,STATE_SAFETY_DOOR)) { sys.state = STATE_HOLD; }
-		  printString_debug("\r\n /////////TEST_POINT_1/////////////////////////");
         }
   
         // Execute a safety door stop with a feed hold, only during a cycle, and disable spindle/coolant.
@@ -329,12 +334,10 @@ void protocol_execute_realtime()
           // Start cycle only if queued motions exist in planner buffer and the motion is not canceled.
           if (plan_get_current_block() && bit_isfalse(sys.suspend,SUSPEND_MOTION_CANCEL)) {
             sys.state = STATE_CYCLE;
-			printString_debug("\r\n /////////TEST_POINT_5/////////////////////////");
             st_prep_buffer(); // Initialize step segment buffer before beginning cycle.
             st_wake_up();
           } else { // Otherwise, do nothing. Set and resume IDLE state.
             sys.state = STATE_IDLE;
-			//增加的复位运动以后归零操作
 			if((STATE_CYCLE == sys.state_last)&&(1 == settings.robot_qinnew.use_Back_to_text))
 			report_realtime_status();
 			if(sys.home_complate_flag == 1)
@@ -345,7 +348,7 @@ void protocol_execute_realtime()
 				plan_sync_position(); // Sync planner position to current machine position.
 				}
           }
-		  sys.state_last = sys.state;//保存上一次的state系统状态
+		  sys.state_last = sys.state;
           sys.suspend = SUSPEND_DISABLE; // Break suspend state.
         }
       }    
@@ -362,7 +365,6 @@ void protocol_execute_realtime()
         // Hold complete. Set to indicate ready to resume.  Remain in HOLD or DOOR states until user
         // has issued a resume command or reset.
 
-	printString_debug("\r\n /////////TEST_POINT_3/////////////////////////");
         if (sys.suspend & SUSPEND_ENERGIZE) { // De-energize system if safety door has been opened.
           spindle_stop();
 		 #ifdef VARIABLE_SPINDLE_2

@@ -42,8 +42,8 @@
 #define BITFLAG_RT_STATUS_SERIAL_RX         bit(3)
 #define BITFLAG_RT_STATUS_LIMIT_PINS        bit(4)
 
-#define BITFLAG_RT_STATUS_PUMP_PWM          bit(5)//返回状态报告增加返回气泵状态
-#define BITFLAG_RT_STATUS_Coordinate_MODE   bit(6)//返回状态报告增加返回气泵状态
+#define BITFLAG_RT_STATUS_PUMP_PWM          bit(5)
+#define BITFLAG_RT_STATUS_Coordinate_MODE   bit(6)
 
 
 // Define settings restore bitflags.
@@ -71,7 +71,7 @@
 // #define SETTING_INDEX_G92    N_COORDINATE_SYSTEM+2  // Coordinate offset (G92.2,G92.3 not supported)
 
 // Define Grbl axis settings numbering scheme. Starts at START_VAL, every INCREMENT, over N_SETTINGS.
-#define AXIS_N_SETTINGS          6//5//表示项目的个数
+#define AXIS_N_SETTINGS          6
 #define AXIS_SETTINGS_START_VAL  100 // NOTE: Reserving settings values >= 100 for axis settings. Up to 255.
 #define AXIS_SETTINGS_INCREMENT  10  // Must be greater than the number of axis settings
 

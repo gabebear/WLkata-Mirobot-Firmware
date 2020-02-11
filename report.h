@@ -110,7 +110,6 @@ void report_startup_line(uint8_t n, char *line);
 // Prints build info and user info
 void report_build_info(char *line);
 
-//自己增加的初始化后报告机器人连杆长度参数的函数
 void report_robot_length_message();
 
 

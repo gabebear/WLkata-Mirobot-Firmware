@@ -226,8 +226,8 @@ uint8_t read_global_settings() {
 
 // A helper method to set settings from command line
 uint8_t settings_store_global_setting(uint8_t parameter, float value) {
-  if ((value < 0.0)&&(parameter != 34)&&(parameter != 41)&&(parameter != 42)&&(parameter != 43)) { return(STATUS_NEGATIVE_VALUE); }//令$34输入L长度时可以为负值！ 
-  if (parameter >= AXIS_SETTINGS_START_VAL) {//$100以后的指令在这里处理
+  if (value < 0.0) { return(STATUS_NEGATIVE_VALUE); }
+  if (parameter >= AXIS_SETTINGS_START_VAL) {
     // Store axis configuration. Axis numbering sequence set by AXIS_SETTING defines.
     // NOTE: Ensure the setting index corresponds to the report.c settings printout.
     parameter -= AXIS_SETTINGS_START_VAL;
@@ -251,7 +251,7 @@ uint8_t settings_store_global_setting(uint8_t parameter, float value) {
           case 2: settings.acceleration[parameter] = value*60*60; break; // Convert to mm/min^2 for grbl internal use.
           case 3: settings.max_travel[parameter] = value; break;  // Store as negative for grbl internal use.
 		  case 4: settings.min_travel[parameter] = value; break;
-		  case 5: settings.Reset[parameter] = value;break;//保存复位以后各个轴需要运动的距离角度数！
+		  case 5: settings.Reset[parameter] = value;break;
         }
         break; // Exit while-loop after setting has been configured and proceed to the EEPROM write call.
       } else {
@@ -321,27 +321,13 @@ uint8_t settings_store_global_setting(uint8_t parameter, float value) {
       case 27: settings.homing_pulloff = value; break;
 	  case 28: settings.homing_pos_dir_mask = int_value; break;
 
-	  case 29: settings.robot_qinnew.D1 = value;break;
-	  case 30: settings.robot_qinnew.A1 = value;break;
-	  case 31: settings.robot_qinnew.A2 = value;break;
-	  case 32: settings.robot_qinnew.A3 = value;break;
-	  case 33: settings.robot_qinnew.D4 = value;break;
-	  case 34: settings.robot_qinnew.L = value;break;
-	  case 35: settings.robot_qinnew.use_interpolation = int_value;break;
-	  case 36: settings.robot_qinnew.interpolation_num = int_value;break;
-	  case 37: settings.robot_qinnew.use_compensation = int_value;break;
-	  case 38: settings.robot_qinnew.compensation_num = int_value;break;
-	  case 39: settings.robot_qinnew.use_reset_pos = int_value;break;
-	  case 40: settings.robot_qinnew.use_Back_to_text = int_value;break;
-	  case 41: settings.robot_qinnew.offset[E_AXIS] = value;break;
-	  case 42: settings.robot_qinnew.offset[F_AXIS] = value;break;
-	  case 43: settings.robot_qinnew.offset[G_AXIS] = value;break;
+	  
 	  
       default: 
         return(STATUS_INVALID_STATEMENT);
     }
   }
-  write_global_settings();//将修改过的新的setting结构体中的参数值保存到EEPROM中
+  write_global_settings();
   return(STATUS_OK);
 }
 

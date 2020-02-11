@@ -63,7 +63,6 @@ uint8_t serial_get_tx_buffer_count();
 
 
 
-//´®¿Ú2
 void serial2_init();
 
 // Writes one byte to the TX serial buffer. Called by main program.

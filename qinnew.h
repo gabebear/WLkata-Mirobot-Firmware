@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file	qinnew.h
   * @author	Thor Zhou	
-  * @email	dongxvzhou@gmail.com
+  * @email	zhoudongxv@yeah.net
   * @date	2019-07-18
   ******************************************************************************
   */
@@ -12,8 +12,7 @@
 
 // Version of the EEPROM data. Will be used to migrate existing data from older versions of Grbl
 // when firmware is upgraded. Always stored in byte 0 of eeprom
-//eeprom 数据的版本。在升级固件时, 将用于将现有数据从旧版本的 grbl 中迁移。始终存储在 eeprom 的字节0中
-#define SETTINGS_VERSION 1  // NOTE: Check settings_reset() when moving to next version.
+#define SETTINGS_VERSION 6
 
 #define minirobot
 
@@ -30,25 +29,23 @@ typedef struct {
 
   float offset[N_AXIS];
 
-  uint8_t use_interpolation;//是否使用插补，0或1
-  uint8_t interpolation_num;//插补的精细程度
+  uint8_t use_interpolation;
+  uint8_t interpolation_num;
 
-  uint8_t use_compensation;//是否使用X轴补偿，0或1  暂时没实现等下
-  uint8_t compensation_num;//补偿的脉冲个数
+  uint8_t use_compensation;
+  uint8_t compensation_num;
 
-  uint8_t use_reset_pos;//是否再运动复位后再运动到初始位置的距离
-  uint8_t use_Back_to_text;//是否在一条指令执行完后有回文
+  uint8_t use_reset_pos;
+  uint8_t use_Back_to_text;
 } robot_t;
 
 
-#define QINNEW_VERSION "20191228"
+#define QINNEW_VERSION "20191228_2"
 
 
-#define _use_reset_pos_  //是否在复位以后运动复位的距离！！！
-//#define _use_compensation_  //是否启用X轴的补偿，暂时先用它没实现等下
+#define _use_reset_pos_  
 
 
-//表示初始位置的笛卡尔坐标值
 #define Cartesian_x (settings.robot_qinnew.A1 + settings.robot_qinnew.D4)//(208)
 #define Cartesian_y (0)//(0)
 #define Cartesian_z (settings.robot_qinnew.D1 + settings.robot_qinnew.A2 + settings.robot_qinnew.A3 + settings.robot_qinnew.L)//(143)
@@ -60,8 +57,7 @@ typedef struct {
 
 #define mini6_board
 
-#define MAX_TRAVEL (-200)//把用于计算复位最大移动距离的原来的参数max_travel[idx]写成固定值200
-
+#define MAX_TRAVEL (-200)
 
 //#define debug
 

@@ -19,6 +19,14 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/**
+  ******************************************************************************
+  * @file	gcode.c
+  * @Modified by Thor Zhou	
+  * @date	2019-12-18
+  ******************************************************************************
+  */
+
 #include "grbl.h"
 
 // NOTE: Max line number is defined by the g-code standard to be 99999. It seems to be an
@@ -93,7 +101,7 @@ uint8_t gc_execute_line(char *line)
   uint8_t ijk_words = 0; // IJK tracking 
 
   // Initialize command and value words variables. Tracks words contained in this block.
-  uint16_t command_words = 0; // G and M command words. Also used for modal group violations.用来检测是否同一组的指令并存
+  uint16_t command_words = 0; // G and M command words. Also used for modal group violations.
   uint32_t value_words = 0; // Value words. 
 
   /* -------------------------------------------------------------------------------------
@@ -226,13 +234,13 @@ uint8_t gc_execute_line(char *line)
             break;
           case 93: case 94: 
             word_bit = MODAL_GROUP_G5; 
-            if (int_value == 93) { gc_block.modal.feed_rate = FEED_RATE_MODE_INVERSE_TIME; } // G93   G93为在多少分钟内完成该动作
-            else { gc_block.modal.feed_rate = FEED_RATE_MODE_UNITS_PER_MIN; } // G94   速度模式设置，G94为默认，mm/min
+            if (int_value == 93) { gc_block.modal.feed_rate = FEED_RATE_MODE_INVERSE_TIME; } // G93   
+            else { gc_block.modal.feed_rate = FEED_RATE_MODE_UNITS_PER_MIN; } // G94   
             break;
           case 20: case 21: 
             word_bit = MODAL_GROUP_G6; 
             if (int_value == 20) { gc_block.modal.units = UNITS_MODE_INCHES; }  // G20  mm/inch
-            else { gc_block.modal.units = UNITS_MODE_MM; } // G21  默认的速度单位 mm/min
+            else { gc_block.modal.units = UNITS_MODE_MM; } // G21 
             break;
           case 40:
             word_bit = MODAL_GROUP_G7;
@@ -292,11 +300,11 @@ uint8_t gc_execute_line(char *line)
           case 3: case 5:
            // word_bit = MODAL_GROUP_M7; 
             switch(int_value) {
-              case 3: gc_block.modal.spindle = SPINDLE_ENABLE_CW; break;//第一个PWM开启，PH4针脚
+              case 3: gc_block.modal.spindle = SPINDLE_ENABLE_CW; break;
               #ifndef USE_SPINDLE_DIR_AS_ENABLE_PIN
-              case 4: gc_block.modal.spindle = SPINDLE_ENABLE_CCW; break;//第二个PWM开启，PE4针脚
+              case 4: gc_block.modal.spindle = SPINDLE_ENABLE_CCW; break;
               #endif
-              case 5: gc_block.modal.spindle = SPINDLE_DISABLE; break;//PWM输出全部停止
+              case 5: gc_block.modal.spindle = SPINDLE_DISABLE; break;
             }
             break;            
          #ifdef ENABLE_M7  
@@ -346,11 +354,11 @@ uint8_t gc_execute_line(char *line)
 			coordinate_to_angle();
 		 	break;
 
-		 case 40://开始校准，清零原来复位参数
+		 case 40:
 		 	printString("M40: Start calibration, clear the original reset parameters.\r\n");
 			start_calibration();
 		 	sys.calibration = 1;
-		    if (bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE)) {//增加的自动homing 
+		    if (bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE)) {
             sys.state = STATE_HOMING; // Set system state variable
             // Only perform homing if Grbl is idle or lost.
             
@@ -363,7 +371,6 @@ uint8_t gc_execute_line(char *line)
 			printString("Calibration reset...");
 			
             mc_homing_cycle(); 
-			//这里是执行复位以后的初始化脚本，因为没有所以先注释掉
             if (!sys.abort) {  // Execute startup scripts after successful homing.
               sys.state = STATE_IDLE; // Set to IDLE when complete.
               st_go_idle(); // Set steppers to the settings idle state before returning.
@@ -373,13 +380,13 @@ uint8_t gc_execute_line(char *line)
           }
 		 	break;
 
-		case 41://将校准得到的复位参数写入EEPROM中
+		case 41:
 		 	printString("M41: Write the reset reset parameters to the EEPROM.\r\n");
 			write_reset_distance();
 			sys.calibration = 0;
 		 	break;
 
-		case 50://解除轴锁定状态
+		case 50:
 		 	printString("M50: Unlock each axis.\r\n");
 			sys.reset_homing = 1;
 		 	break;
@@ -390,7 +397,7 @@ uint8_t gc_execute_line(char *line)
       
         // Check for more than one command per modal group violations in the current block
         // NOTE: Variable 'word_bit' is always assigned, if the command is valid.
-        if ( bit_istrue(command_words,bit(word_bit)) )//实际是检查了上次和这次的word_bit是否一样，确定是否有同一组的指令并存
+        if ( bit_istrue(command_words,bit(word_bit)) )
 			{ FAIL(STATUS_GCODE_MODAL_GROUP_VIOLATION); }
         command_words |= bit(word_bit);
         break;
@@ -421,7 +428,7 @@ uint8_t gc_execute_line(char *line)
 		#ifdef VARIABLE_SPINDLE_2
 		  case 'E': word_bit = WORD_E;gc_block.values.s_2 = value; break;
 		#endif
-          case 'T': word_bit = WORD_T; break; // gc.values.t = int_value;//借用了原来的T，把word_bit改成了E
+          case 'T': word_bit = WORD_T; break; 
           case 'A': word_bit = WORD_A; gc_block.values.xyz[A_AXIS] = value; axis_words |= (1<<A_AXIS); break;
           case 'B': word_bit = WORD_B; gc_block.values.xyz[B_AXIS] = value; axis_words |= (1<<B_AXIS); break;
           case 'C': word_bit = WORD_C; gc_block.values.xyz[C_AXIS] = value; axis_words |= (1<<C_AXIS); break;
@@ -531,11 +538,9 @@ uint8_t gc_execute_line(char *line)
   
   // [4. Set spindle speed ]: S is negative (done.)
   if (bit_isfalse(value_words,bit(WORD_S))) { gc_block.values.s = gc_state.spindle_speed; }
-//这里应该是让这一路的PWM保持输出，就是输入其他指令时，PWM不变化的继续输出原来的值
 #ifdef VARIABLE_SPINDLE_2
   if (bit_isfalse(value_words,bit(WORD_E))) { gc_block.values.s_2 = gc_state.spindle_speed_2; }
 #endif
-  //printInteger(value_words);//这句话可以输出调试信息，包括正负值，和最大32位的整数
 
 
   // bit_false(value_words,bit(WORD_S)); // NOTE: Single-meaning value word. Set at end of error-checking.
@@ -575,7 +580,7 @@ uint8_t gc_execute_line(char *line)
   // [12. Set length units ]: N/A
   // Pre-convert XYZ coordinate values to millimeters, if applicable.
   uint8_t idx;
-  if (gc_block.modal.units == UNITS_MODE_INCHES) {//英寸模式
+  if (gc_block.modal.units == UNITS_MODE_INCHES) {
     for (idx=0; idx<N_AXIS; idx++) { // Axes indices are consistent, so loop may be used.
       if (bit_istrue(axis_words,bit(idx)) ) {
         gc_block.values.xyz[idx] *= MM_PER_INCH;
@@ -687,7 +692,7 @@ uint8_t gc_execute_line(char *line)
 						gc_block.values.xyz[idx] = gc_state.position_Cartesian[idx];
 					else
 						gc_block.values.xyz[idx] = gc_state.position[idx]; // No axis word in block. Keep same axis position.
-            } else {//这里根据轴字来判断，哪个轴的指令是有数的，则执行下边的else，没有数的则执行上边的把原来的值赋值给他！
+            } else {
               // Update specified value according to distance mode or ignore if absolute override is active.
               // NOTE: G53 is never active with G28/30 since they are in the same modal group.
               if (gc_block.non_modal_command != NON_MODAL_ABSOLUTE_OVERRIDE) {
@@ -718,7 +723,7 @@ uint8_t gc_execute_line(char *line)
 			
 	   
 
-					//这里，如果输入的指令有两个后边数字值，则进入循环两次，原来不明白为什么这里会输出多次，就是这个原因！	
+					
 				  }
 				  else
 				  {
@@ -1006,7 +1011,7 @@ uint8_t gc_execute_line(char *line)
 #ifdef VARIABLE_SPINDLE_2
   if (gc_state.modal.spindle != gc_block.modal.spindle) {
     // Update spindle control and apply spindle speed when enabling it in this block.  
-   if(gc_block.modal.spindle == SPINDLE_ENABLE_CW)//M3,pwm1输出
+   if(gc_block.modal.spindle == SPINDLE_ENABLE_CW)
     {spindle_run(gc_block.modal.spindle, gc_state.spindle_speed);
     gc_state.modal.spindle = gc_block.modal.spindle;  } 
    if(gc_block.modal.spindle == SPINDLE_ENABLE_CCW)
@@ -1129,145 +1134,8 @@ uint8_t gc_execute_line(char *line)
 			printString("\r\ngc_block.values.xyz[G]:");printInteger(gc_block.values.xyz[G_AXIS]);
 		
 	#endif
-			if(gc_state.coord_mode == coordinate_mode)
-				{	
 			
-					printString_debug("\r\nin case coordinate_mode");
-
-					float difference[N_Cartesian];
-					float current_position[N_Cartesian];
 					
-					for(int i = 0;i< N_Cartesian;i++ )
-						{
-						current_position[i] = sys.position_Cartesian[i];
-						}
-					
-					//用来储存目标坐标和当前坐标之间的距离
-					difference[X_Cartesian] = gc_block.values.xyz[E_AXIS] - current_position[X_Cartesian];
-					difference[Y_Cartesian] = gc_block.values.xyz[F_AXIS] - current_position[Y_Cartesian];
-					difference[Z_Cartesian] = gc_block.values.xyz[G_AXIS] - current_position[Z_Cartesian];
-					difference[RX_Cartesian] = gc_block.values.xyz[A_AXIS] - current_position[RX_Cartesian];
-					difference[RY_Cartesian] = gc_block.values.xyz[B_AXIS] - current_position[RY_Cartesian];
-					difference[RZ_Cartesian] = gc_block.values.xyz[C_AXIS] - current_position[RZ_Cartesian];
-					//TODO:增加姿态的插值。暂时不加，姿态维持不变，只位置插值。
-					printString_debug("\r\ndifference[X_Cartesian]:");printInteger_debug(difference[X_Cartesian]);
-					printString_debug("\r\ndifference[Y_Cartesian]:");printInteger_debug(difference[Y_Cartesian]);
-					printString_debug("\r\ndifference[Z_Cartesian]:");printInteger_debug(difference[Z_Cartesian]);
-					
-					//把本次的笛卡尔值和姿态值保存起来
-					//TODO：sys.position_cartesian应该初始化为0
-					sys.position_Cartesian[X_Cartesian] = gc_block.values.xyz[E_AXIS];
-					sys.position_Cartesian[Y_Cartesian] = gc_block.values.xyz[F_AXIS];
-					sys.position_Cartesian[Z_Cartesian] = gc_block.values.xyz[G_AXIS];
-					sys.position_Cartesian[RX_Cartesian] = gc_block.values.xyz[A_AXIS];
-					sys.position_Cartesian[RY_Cartesian] = gc_block.values.xyz[B_AXIS];
-					sys.position_Cartesian[RZ_Cartesian] = gc_block.values.xyz[C_AXIS];
-					
-					float cartesian_mm = sqrt(	pow(difference[X_Cartesian],2) +  //sq平方函数，在笛卡尔坐标模式下，求运动始末点的距离（mm）
-									pow(difference[Y_Cartesian],2) +
-									pow(difference[Z_Cartesian],2));
-					//if (cartesian_mm < 0.000001) { break; }//注释这里就是因为如果cartesian_mm为0，则只改变姿态不运动！！！
-					printString_debug("\r\ncartesian_mm:");printInteger_debug(cartesian_mm);
-					float seconds = settings.robot_qinnew.interpolation_num * cartesian_mm / gc_state.feed_rate;//60表示插补精细程度
-					printString_debug("\r\nseconds:");printInteger_debug(seconds);
-					int steps = 1;
-					if(settings.robot_qinnew.use_interpolation)
-						{
-						steps = max(1, (int)(25 * seconds));
-						}
-					printString_debug("\r\nsteps:");printInteger_debug(steps);
-					float destination[N_Cartesian];
-					
-
-#if 0
-					static bool axis_Directionflag_last = 0;
-					bool axis_Directionflag;
-					int32_t target_steps_temp;
-					float temp[7] ={0,0,0,0,0,0,0};//用于补偿的
-#endif
-
-					for (int s = 1; s <= steps; s++) 
-						{//这个大循环，应该是个在轨迹当中插值的过程！
-						float fraction = (float)s / (float)steps;//计算比率
-							//for(int8_t i=0; i < NUM_AXIS; i++) {
-							//		destination[i] = current_position[i] + difference[i] * fraction;
-							//			}
-							destination[X_Cartesian] = current_position[X_Cartesian] + difference[X_Cartesian] * fraction;
-							destination[Y_Cartesian] = current_position[Y_Cartesian] + difference[Y_Cartesian] * fraction;
-							destination[Z_Cartesian] = current_position[Z_Cartesian] + difference[Z_Cartesian] * fraction;
-							destination[RX_Cartesian] = current_position[RX_Cartesian] + difference[RX_Cartesian] * fraction;
-							destination[RY_Cartesian] = current_position[RY_Cartesian] + difference[RY_Cartesian] * fraction;
-							destination[RZ_Cartesian] = current_position[RZ_Cartesian] + difference[RZ_Cartesian] * fraction;
-							
-							InverseInit();
-							//Inverse(destination[X_Cartesian],destination[Y_Cartesian],destination[Z_Cartesian],gc_block.values.xyz[A_AXIS],gc_block.values.xyz[B_AXIS],gc_block.values.xyz[C_AXIS]);
-							Inverse(destination[X_Cartesian],destination[Y_Cartesian],destination[Z_Cartesian],destination[RX_Cartesian],destination[RY_Cartesian],destination[RZ_Cartesian]);
-
-#if 0
-							//x轴补偿
-							memcpy(temp, gc_state.position, sizeof(gc_state.position));
-							target_steps_temp = lround(temp[E_AXIS]*settings.steps_per_mm[E_AXIS]);
-						if((target_steps_temp - get_pl(E_AXIS)) != 0)
-							{
-							if((target_steps_temp - get_pl(E_AXIS)) > 0)
-								{
-									axis_Directionflag = false;
-								}
-							if((target_steps_temp - get_pl(E_AXIS)) < 0)
-								{
-									axis_Directionflag = true;
-								}
-							//	printString("\r\naxis_Directionflag:\r\n");
-							//	printInteger(axis_Directionflag);
-							//	printString("\r\target_steps_temp - get_pl(E_AXIS):\r\n");
-							//	printInteger(target_steps_temp - get_pl(E_AXIS));
-
-							if(axis_Directionflag != axis_Directionflag_last)
-								{
-								
-								if(axis_Directionflag == false)
-									{temp[4] +=settings.robot_qinnew.compensation_num;
-								//	printString("\r\nin forward compensation\r\n");
-									}
-								else
-									{temp[4] -=settings.robot_qinnew.compensation_num;
-								//	printString("\r\nin inverse compensation\r\n");
-									}
-								
-								mc_line(temp, -1.0, false, true);
-								}
-							 axis_Directionflag_last = axis_Directionflag; 
-							}
-	#endif
-							gc_state.position[D_AXIS] = gc_block.values.xyz[D_AXIS];//增加笛卡尔对D轴的支持
-							mc_line(gc_state.position, -1.0, false, false);
-							
-						}
-							
-							break;
-
-					
-					
-					//printString("\r\n");
-					//printString("theta 1:");
-					//printFloat(gc_block.values.xyz[E_AXIS],2);
-					//printString("\r\n");
-					//printString("theta 2:");
-					//printFloat(gc_block.values.xyz[F_AXIS],2);
-					//printString("\r\n");
-					//printString("theta 3:");
-					//printFloat(gc_block.values.xyz[G_AXIS],2);
-					//printString("\r\n");
-					//printString("theta 4:");
-					//printFloat(gc_block.values.xyz[A_AXIS],2);
-					//printString("\r\n");
-					//printString("theta 5:");
-					//printFloat(gc_block.values.xyz[B_AXIS],2);
-					//printString("\r\n");
-					//printString("theta 6:");
-					//printFloat(gc_block.values.xyz[C_AXIS],2);
-				//	printString("\r\n");
-				}	
           #ifdef USE_LINE_NUMBERS
             mc_line(gc_block.values.xyz, -1.0, false, gc_state.line_number);
           #else
@@ -1296,145 +1164,8 @@ uint8_t gc_execute_line(char *line)
 
 			printString_debug("in case MOTION_MODE_LINEAR\r\n");
 
-			if(gc_state.coord_mode == coordinate_mode)
-				{	
-					printString_debug("in case coordinate_mode\r\n");
-					float difference[N_Cartesian];
-					float current_position[6];
+		
 					
-					for(int i = 0;i< N_Cartesian;i++ )
-						{
-						current_position[i] = sys.position_Cartesian[i];
-						}
-					
-					//用来储存目标坐标和当前坐标之间的距离
-					difference[X_Cartesian] = gc_block.values.xyz[E_AXIS] - current_position[X_Cartesian];
-					difference[Y_Cartesian] = gc_block.values.xyz[F_AXIS] - current_position[Y_Cartesian];
-					difference[Z_Cartesian] = gc_block.values.xyz[G_AXIS] - current_position[Z_Cartesian];
-					difference[RX_Cartesian] = gc_block.values.xyz[A_AXIS] - current_position[RX_Cartesian];
-					difference[RY_Cartesian] = gc_block.values.xyz[B_AXIS] - current_position[RY_Cartesian];
-					difference[RZ_Cartesian] = gc_block.values.xyz[C_AXIS] - current_position[RZ_Cartesian];
-					//TODO:增加姿态的插值。暂时不加，姿态维持不变，只位置插值。
-					printString_debug("difference[X_Cartesian]:");printInteger_debug(difference[X_Cartesian]);
-					printString_debug("difference[Y_Cartesian]:");printInteger_debug(difference[Y_Cartesian]);
-					printString_debug("difference[Z_Cartesian]:");printInteger_debug(difference[Z_Cartesian]);
-					
-					//把本次的笛卡尔值和姿态值保存起来
-					//TODO：sys.position_cartesian应该初始化为0
-					sys.position_Cartesian[X_Cartesian] = gc_block.values.xyz[E_AXIS];
-					sys.position_Cartesian[Y_Cartesian] = gc_block.values.xyz[F_AXIS];
-					sys.position_Cartesian[Z_Cartesian] = gc_block.values.xyz[G_AXIS];
-					sys.position_Cartesian[RX_Cartesian] = gc_block.values.xyz[A_AXIS];
-					sys.position_Cartesian[RY_Cartesian] = gc_block.values.xyz[B_AXIS];
-					sys.position_Cartesian[RZ_Cartesian] = gc_block.values.xyz[C_AXIS];
-					
-					float cartesian_mm = sqrt(	pow(difference[X_Cartesian],2) +  //sq平方函数，在笛卡尔坐标模式下，求运动始末点的距离（mm）
-									pow(difference[Y_Cartesian],2) +
-									pow(difference[Z_Cartesian],2));
-				//	if (cartesian_mm < 0.000001) { break; }
-					printString_debug("\r\ncartesian_mm:");printInteger_debug(cartesian_mm);
-					float seconds = settings.robot_qinnew.interpolation_num * cartesian_mm / gc_state.feed_rate;
-					printString_debug("\r\nseconds:");printInteger_debug(seconds);
-					int steps = 1;
-					//	printString_debug("\r\nuse_interpolation:");printInteger_debug(settings.robot_qinnew.use_interpolation);
-					if(settings.robot_qinnew.use_interpolation)
-						{
-						steps = max(1, (int)(25 * seconds));
-						}
-					printString_debug("\r\nsteps:");printInteger_debug(steps);
-					float destination[N_Cartesian];
-					
-
-#if 1
-					static bool axis_Directionflag_last = 0;
-					bool axis_Directionflag;
-					int32_t target_steps_temp;
-					float temp[7] ={0,0,0,0,0,0,0};//用于补偿的
-#endif
-
-					for (int s = 1; s <= steps; s++) 
-						{//这个大循环，应该是个在轨迹当中插值的过程！
-						float fraction = (float)s / (float)steps;//计算比率
-							//for(int8_t i=0; i < NUM_AXIS; i++) {
-							//		destination[i] = current_position[i] + difference[i] * fraction;
-							//			}
-							destination[X_Cartesian] = current_position[X_Cartesian] + difference[X_Cartesian] * fraction;
-							destination[Y_Cartesian] = current_position[Y_Cartesian] + difference[Y_Cartesian] * fraction;
-							destination[Z_Cartesian] = current_position[Z_Cartesian] + difference[Z_Cartesian] * fraction;
-							destination[RX_Cartesian] = current_position[RX_Cartesian] + difference[RX_Cartesian] * fraction;
-							destination[RY_Cartesian] = current_position[RY_Cartesian] + difference[RY_Cartesian] * fraction;
-							destination[RZ_Cartesian] = current_position[RZ_Cartesian] + difference[RZ_Cartesian] * fraction;
-							
-							InverseInit();
-							Inverse(destination[X_Cartesian],destination[Y_Cartesian],destination[Z_Cartesian],destination[RX_Cartesian],destination[RY_Cartesian],destination[RZ_Cartesian]);
-
-#if 1
-                  if(1 == settings.robot_qinnew.use_compensation)
-                  	{
-							//x轴补偿
-							memcpy(temp, gc_state.position, sizeof(gc_state.position));
-							target_steps_temp = lround(temp[E_AXIS]*settings.steps_per_mm[E_AXIS]);
-						if((target_steps_temp - get_pl(E_AXIS)) != 0)
-							{
-							if((target_steps_temp - get_pl(E_AXIS)) > 0)
-								{
-									axis_Directionflag = false;
-								}
-							if((target_steps_temp - get_pl(E_AXIS)) < 0)
-								{
-									axis_Directionflag = true;
-								}
-							//	printString("\r\naxis_Directionflag:\r\n");
-							//	printInteger(axis_Directionflag);
-							//	printString("\r\target_steps_temp - get_pl(E_AXIS):\r\n");
-							//	printInteger(target_steps_temp - get_pl(E_AXIS));
-
-							if(axis_Directionflag != axis_Directionflag_last)
-								{
-								
-								if(axis_Directionflag == false)//E轴向正方向运动
-									{temp[4] +=settings.robot_qinnew.compensation_num;
-								//	printString("\r\nin forward compensation\r\n");
-									}
-								else//E轴向负方向运动
-									{temp[4] -=settings.robot_qinnew.compensation_num;
-								//	printString("\r\nin inverse compensation\r\n");
-									}
-								
-								mc_line(temp, gc_state.feed_rate, gc_state.modal.feed_rate, true);
-								}
-							 axis_Directionflag_last = axis_Directionflag; 
-							}
-                  	}
-	#endif
-							gc_state.position[D_AXIS] = gc_block.values.xyz[D_AXIS];//增加笛卡尔对D轴的支持
-							mc_line(gc_state.position, gc_state.feed_rate, gc_state.modal.feed_rate, false);
-							
-						}
-							break;
-
-					
-					
-					//printString("\r\n");
-					//printString("theta 1:");
-					//printFloat(gc_block.values.xyz[E_AXIS],2);
-					//printString("\r\n");
-					//printString("theta 2:");
-					//printFloat(gc_block.values.xyz[F_AXIS],2);
-					//printString("\r\n");
-					//printString("theta 3:");
-					//printFloat(gc_block.values.xyz[G_AXIS],2);
-					//printString("\r\n");
-					//printString("theta 4:");
-					//printFloat(gc_block.values.xyz[A_AXIS],2);
-					//printString("\r\n");
-					//printString("theta 5:");
-					//printFloat(gc_block.values.xyz[B_AXIS],2);
-					//printString("\r\n");
-					//printString("theta 6:");
-					//printFloat(gc_block.values.xyz[C_AXIS],2);
-				//	printString("\r\n");
-				}	
           #ifdef USE_LINE_NUMBERS
             mc_line(gc_block.values.xyz, -1.0, false, gc_state.line_number);
           #else
@@ -1512,13 +1243,11 @@ uint8_t gc_execute_line(char *line)
       // As far as the parser is concerned, the position is now == target. In reality the
       // motion control system might still be processing the action and the real tool position
       // in any intermediate location.
-      if(coordinate_mode == gc_state.coord_mode )//笛卡尔模式
-	  	//memcpy(gc_state.position_Cartesian, gc_block.values.xyz, sizeof(gc_block.values.xyz));
-		//笛卡尔模式gc_block.values.xyz会在逆解函数中被变成角度!!!!!
+      if(coordinate_mode == gc_state.coord_mode )
       	{
-      	if(0 == settings.robot_qinnew.use_compensation)//如果没有插补
+      	if(0 == settings.robot_qinnew.use_compensation)
                   	{
-                  		if(sys.soft_limit_trigger_flag == 8)//如果没有软限位被触发
+                  		if(sys.soft_limit_trigger_flag == 8)
 						{memcpy(gc_state.position_Cartesian, gc_block.values.xyz, sizeof(gc_block.values.xyz));}
 						else 
 						{}
@@ -1528,23 +1257,19 @@ uint8_t gc_execute_line(char *line)
 							}
 			}
 		
-	  else//角度模式
+	  else
 	  	{
-	  	//memcpy(gc_state.position_backup, gc_state.position, sizeof(gc_state.position));//为了软限位把原来的值备份起来，如果软限位被触发，则用来恢复原来的值
-	  	if(sys.soft_limit_trigger_flag == 8)//本次没有软限位发生！注意mc_line中的软限位判断在此之前进行！
-      		{memcpy(gc_state.position, gc_block.values.xyz, sizeof(gc_block.values.xyz));} // gc_state.position[] = gc_block.values.xyz[]
-			else//有软限位发生
+	  	if(sys.soft_limit_trigger_flag == 8)
+      		{memcpy(gc_state.position, gc_block.values.xyz, sizeof(gc_block.values.xyz));} 
+			else
 				{
-             for (idx=0; idx<N_AXIS; idx++) {//遍历各轴,排除软限位的轴不更新
+             for (idx=0; idx<N_AXIS; idx++) {
                 if(idx == sys.soft_limit_trigger_flag)
 					{continue;}
 				gc_state.position[idx] = gc_block.values.xyz[idx];
 				
              	}
 			}
-		//printString("\r\ngc_state.position");printFloat(gc_state.position[4], 2);
-		//printString("\r\ngc_state.position_backup");printFloat(gc_state.position_backup[4], 2);
-		//printString("\r\ngc_block.values.xyz");printFloat(gc_block.values.xyz[4], 2);
 	  		}
     }
   }

@@ -19,9 +19,18 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/**
+  ******************************************************************************
+  * @file	serial.c
+  * @Modified by Thor Zhou	
+  * @email	zhoudongxv@yeah.net
+  * @date	2019-12
+  ******************************************************************************
+  */
+
+
 #include "grbl.h"
 
-//串口0
 uint8_t serial_rx_buffer[RX_BUFFER_SIZE];
 uint8_t serial_rx_buffer_head = 0;
 volatile uint8_t serial_rx_buffer_tail = 0;
@@ -30,7 +39,6 @@ uint8_t serial_tx_buffer[TX_BUFFER_SIZE];
 uint8_t serial_tx_buffer_head = 0;
 volatile uint8_t serial_tx_buffer_tail = 0;
 
-//串口2
 uint8_t serial2_rx_buffer[RX_BUFFER_SIZE];
 uint8_t serial2_rx_buffer_head = 0;
 volatile uint8_t serial2_rx_buffer_tail = 0;
@@ -45,7 +53,6 @@ volatile uint8_t serial2_tx_buffer_tail = 0;
   volatile uint8_t flow_ctrl = XON_SENT; // Flow control state variable
 #endif
   
-//返回RX串行缓冲区中使用的字节数。
 // Returns the number of bytes used in the RX serial buffer.
 uint8_t serial_get_rx_buffer_count()
 {
@@ -83,7 +90,7 @@ uint8_t serial2_get_tx_buffer_count()
 
 void serial_init()
 {
-	PORTE |= (1<<0);//防止串口1收到乱码，添加接收引脚上拉
+	PORTE |= (1<<0);
 	
   // Set baud rate
   #if BAUD_RATE < 57600
@@ -108,7 +115,7 @@ void serial_init()
 
 void serial2_init()
 {
-  PORTH |= (1<<0);//防止串口2收到乱码，添加接收引脚上拉
+  PORTH |= (1<<0);
 
   // Set baud rate
   #if BAUD_RATE < 57600
@@ -177,7 +184,7 @@ void serial2_write(uint8_t data) {
 
 
 
-// Data Register Empty Interrupt handler//数据寄存器空中断处理程序
+// Data Register Empty Interrupt handler
 ISR(SERIAL_UDRE)
 {
   uint8_t tail = serial_tx_buffer_tail; // Temporary serial_tx_buffer_tail (to optimize for volatile)
@@ -206,7 +213,7 @@ ISR(SERIAL_UDRE)
   if (tail == serial_tx_buffer_head) { UCSR0B &= ~(1 << UDRIE0); }
 }
 
-// Data Register Empty Interrupt handler//串口2数据寄存器空中断处理程序
+// Data Register Empty Interrupt handler
 ISR(SERIAL2_UDRE)
 {
   uint8_t tail = serial2_tx_buffer_tail; // Temporary serial_tx_buffer_tail (to optimize for volatile)
@@ -238,7 +245,6 @@ ISR(SERIAL2_UDRE)
 
 
 // Fetches the first byte in the serial read buffer. Called by main program.
-//获取串行读缓冲区中的第一个字节。 由主程序调用。
 uint8_t serial_read()
 {
   uint8_t tail = serial_rx_buffer_tail; // Temporary serial_rx_buffer_tail (to optimize for volatile)
@@ -249,7 +255,7 @@ uint8_t serial_read()
     uint8_t data = serial_rx_buffer[tail];
     
     tail++;
-    if (tail == RX_BUFFER_SIZE) { tail = 0; }//串口也是环形队列
+    if (tail == RX_BUFFER_SIZE) { tail = 0; }
     serial_rx_buffer_tail = tail;
 
     #ifdef ENABLE_XONXOFF
@@ -267,14 +273,13 @@ uint8_t serial_read()
 uint8_t serial2_read()
 {
   uint8_t tail = serial2_rx_buffer_tail; // Temporary serial_rx_buffer_tail (to optimize for volatile)
-  //临时serial_rx_buffer_tail（优化volatile）
   if (serial2_rx_buffer_head == tail) {
     return SERIAL_NO_DATA;
   } else {
     uint8_t data = serial2_rx_buffer[tail];
     
     tail++;
-    if (tail == RX_BUFFER_SIZE) { tail = 0; }//串口也是环形队列
+    if (tail == RX_BUFFER_SIZE) { tail = 0; }
     serial2_rx_buffer_tail = tail;
 
     #ifdef ENABLE_XONXOFF

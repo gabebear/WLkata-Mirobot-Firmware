@@ -40,13 +40,13 @@
 	//printString("in mc_line\r\n");
   // If enabled, check for soft limit violations. Placed here all line motions are picked up
   // from everywhere in Grbl.
-    if (sys.reset_homing == 0) //增加的软件reset后必须homing的操作
+    if (sys.reset_homing == 0) 
   	{ 
 	  printString("\r\nLocked status of each axis!\r\n");
       return;
      }
   
-  if((sys.home_complate_flag == 0)&&(sys.calibration == 0)&&(bit_istrue(settings.flags,BITFLAG_SOFT_LIMIT_ENABLE))&&(limits_soft_check(target) != 8) )//确保如果是复位以后运动复位距离时不需要软限位起作用！机械臂到了复位以后的初始位置才让软限位起作用！
+  if((sys.home_complate_flag == 0)&&(sys.calibration == 0)&&(bit_istrue(settings.flags,BITFLAG_SOFT_LIMIT_ENABLE))&&(limits_soft_check(target) != 8) )
 	{
 	 
 	 sys.soft_limit_trigger_flag = limits_soft_check(target);
@@ -73,11 +73,11 @@
 	  	}
 		printString("\r\n");
 	  
-      return;    //软限位起作用
+      return;    
 	}
     else
     	{
-		sys.soft_limit_trigger_flag = 8;//表明软限位没有被触发
+		sys.soft_limit_trigger_flag = 8;
 		}
 
 
@@ -287,7 +287,7 @@ void mc_homing_cycle()
   		limits_go_home(HOMING_ALL); 
 	}else
 		{
-		sys.sym_homing = 0;//标志位为1表示各轴单独复位，执行后，再次修改为0
+		sys.sym_homing = 0;
   //limits_go_home(HOMING_CYCLE_4); 
   limits_go_home(HOMING_CYCLE_0);  // Homing cycle 0
   #ifdef HOMING_CYCLE_1
@@ -324,10 +324,10 @@ void mc_homing_cycle()
   // Gcode parser position was circumvented by the limits_go_home() routine, so sync position now.
   gc_sync_position();
 
-  gc_init(); // 初始化G代码解释器，否则上一次的状态如M20在homing后会保存着
+  gc_init(); 
 	  spindle_init();
 #ifdef VARIABLE_SPINDLE_2
-	  spindle_init_2();//第二路PWM的输出
+	  spindle_init_2();
 #endif
 
 
@@ -415,14 +415,10 @@ void mc_homing_cycle()
 // is in a motion state. If so, kills the steppers and sets the system alarm to flag position
 // lost, since there was an abrupt uncontrolled deceleration. Called at an interrupt level by
 // realtime abort command and hard limits. So, keep to a minimum.
-//方法通过设置实时重置命令并终止系统中的任何活动进程来准备系统重置。
-//这还检查Grbl处于运动状态时是否发出系统重置。如果是这样，杀死步进器并将系统警报设置为标志位置丢失，
-//因为出现了突然的不受控制的减速。通过实时中止命令和硬限制在中断级别调用。所以，保持最低限度。
 
 void mc_reset()
 {
   // Only this function can set the system reset. Helps prevent multiple kill calls.
-  ////只有此函数才能设置系统复位。有助于防止多次杀戮呼叫。
   if (bit_isfalse(sys_rt_exec_state, EXEC_RESET)) {
     bit_true_atomic(sys_rt_exec_state, EXEC_RESET);
 

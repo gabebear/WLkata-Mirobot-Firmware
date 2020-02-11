@@ -20,6 +20,14 @@
 
 #include "grbl.h"
 
+/**
+  ******************************************************************************
+  * @file	system.c
+  * @Modified by Thor Zhou	
+  * @email	zhoudongxv@yeah.net
+  * @date	2019-12
+  ******************************************************************************
+  */
 
 void system_init() 
 {
@@ -124,13 +132,9 @@ uint8_t system_execute_line(char *line)
           // Perform reset when toggling off. Check g-code mode should only work if Grbl
           // is idle and ready, regardless of alarm locks. This is mainly to keep things
           // simple and consistent.
-          //这将切换Grbl的gcode解析器，让所有传入的块完全处理它们，就像在正常操作中一样，
-          //但它不会移动任何轴，忽略驻留，并关闭主轴和冷却剂。这是为了给用户提供一种方法，
-          //用Grbl的解析器检查他们的新g代码程序的运行情况，并监视是否有任何错误。
-          //（最终，这也将检查软限制违规情况。）
           if ( sys.state == STATE_CHECK_MODE ) { 
             mc_reset(); 
-            report_feedback_message(MESSAGE_DISABLED);//再发一次则失能该模式
+            report_feedback_message(MESSAGE_DISABLED);
           } else {
             if (sys.state) { return(STATUS_IDLE_ERROR); } // Requires no alarm mode.
             sys.state = STATE_CHECK_MODE;
@@ -176,7 +180,7 @@ uint8_t system_execute_line(char *line)
 			//printString(line[(char_counter+1)]);
 		  if (line[(char_counter+1)] == 'H' )
 		  	{
-				sys.sym_homing = 1;//复位指令为$HH时，各轴单独复位 
+				sys.sym_homing = 1;
 		    }
 		  
           if (bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE)) { 
@@ -191,7 +195,7 @@ uint8_t system_execute_line(char *line)
             
             
             mc_homing_cycle(); 
-            if (!sys.abort) {  // Execute startup scripts after successful homing.在复位后执行已经保存的开机脚本
+            if (!sys.abort) {  // Execute startup scripts after successful homing.
               sys.state = STATE_IDLE; // Set to IDLE when complete.
               st_go_idle(); // Set steppers to the settings idle state before returning.
               system_execute_startup(line); 
@@ -260,7 +264,6 @@ uint8_t system_execute_line(char *line)
             if(!read_float(line, &char_counter, &value)) { return(STATUS_BAD_NUMBER_FORMAT); }
             if((line[char_counter] != 0) || (parameter > 255)) { return(STATUS_INVALID_STATEMENT); }
             return(settings_store_global_setting((uint8_t)parameter, value));
-			//parameter提出的是$141=100中的141，value提出的是其中的100
           }
       }    
   }
@@ -270,7 +273,7 @@ uint8_t system_execute_line(char *line)
 
 // Returns machine position of axis 'idx'. Must be sent a 'step' array.
 // NOTE: If motor steps and machine position are not in the same coordinate frame, this function
-//   serves as a central place to compute the transformation.将步数转换为MM距离的函数
+//   serves as a central place to compute the transformation.
 float system_convert_axis_steps_to_mpos(int32_t *steps, uint8_t idx)
 {
   float pos;
@@ -288,7 +291,6 @@ float system_convert_axis_steps_to_mpos(int32_t *steps, uint8_t idx)
   return(pos);
 }
   
-//将各个轴的用步数表示的位置转换成用MM表示的位置
 void system_convert_array_steps_to_mpos(float *position, int32_t *steps)
 {
   uint8_t idx;

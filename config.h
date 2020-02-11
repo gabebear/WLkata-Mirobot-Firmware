@@ -90,12 +90,12 @@
 // Number of homing cycles performed after when the machine initially jogs to limit switches.
 // This help in preventing overshoot and should improve repeatability. This value should be one or 
 // greater.
-#define N_HOMING_LOCATE_CYCLE 1 // Integer (1-128)复位碰到限位以后重复复位的次数
+#define N_HOMING_LOCATE_CYCLE 1 // Integer (1-128)
 
 // After homing, Grbl will set by default the entire machine space into negative space, as is typical
 // for professional CNC machines, regardless of where the limit switches are located. Uncomment this 
 // define to force Grbl to always set the machine origin at the homed location despite switch orientation.
- #define HOMING_FORCE_SET_ORIGIN // Uncomment to enable.这个宏决定了复位以后是否按照新的位置计算零点
+ #define HOMING_FORCE_SET_ORIGIN // Uncomment to enable.
 
 // Number of blocks Grbl executes upon startup. These blocks are stored in EEPROM, where the size
 // and addresses are defined in settings.h. With the current settings, up to 2 startup blocks may
@@ -173,7 +173,6 @@
 // This build option will invert only the limit pins defined here, and then the invert limits setting
 // will be applied to all of them. This is useful when a user has a mixed set of limit pins with both
 // normally-open(NO) and normally-closed(NC) switches installed on their machine.
-//当用户在其计算机上安装了一组具有正常打开 (no) 和正常关闭 (nc) 开关的混合限制引脚时, 这很有用。
 // NOTE: PLEASE DO NOT USE THIS, unless you have a situation that needs it.
 // #define INVERT_LIMIT_PIN_MASK ((1<<X_LIMIT_BIT)|(1<<Y_LIMIT_BIT)) // Default disabled. Uncomment to enable.
 
@@ -257,7 +256,7 @@
 // NOTE: IMPORTANT for Arduino Unos! When enabled, the Z-limit pin D11 and spindle enable pin D12 switch!
 // The hardware PWM output on pin D11 is required for variable spindle output voltages.
 #define VARIABLE_SPINDLE // Default enabled. Comment to disable.
-#define VARIABLE_SPINDLE_2//增加第二路PWM输出功能
+#define VARIABLE_SPINDLE_2
 
 // Used by the variable spindle output only. These parameters set the maximum and minimum spindle speed
 // "S" g-code values to correspond to the maximum and minimum pin voltages. There are 256 discrete and 
@@ -392,8 +391,7 @@
 // electrical interference on the signal cables from external sources. It's recommended to first
 // use shielded signal cables with their shielding connected to ground (old USB/computer cables 
 // work well and are cheap to find) and wire in a low-pass circuit into each limit pin.
-// #define ENABLE_SOFTWARE_DEBOUNCE // Default disabled. Uncomment to enable.//使用看门狗来给限位开关做软件消抖
-
+// #define ENABLE_SOFTWARE_DEBOUNCE // Default disabled. Uncomment to enable.
 // Force Grbl to check the state of the hard limit switches when the processor detects a pin
 // change inside the hard limit ISR routine. By default, Grbl will trigger the hard limits
 // alarm upon any pin change, since bouncing switches can cause a state check like this to 
