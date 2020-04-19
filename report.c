@@ -162,7 +162,7 @@ void report_init_message()
 {
   //printPgmString(PSTR("\r\nQinnew Robot " QINNEW_VERSION " based on Grbl " GRBL_VERSION " ['$' for help]\r\n"));
   printPgmString(PSTR("\r\nGrbl " GRBL_VERSION " ['$' for help]\r\n"));
-  printPgmString(PSTR("\r\nQinnew Robot " QINNEW_VERSION " based on Grbl " GRBL_VERSION " ['$' for help--Thor Zhou]\r\n"));
+  printPgmString(PSTR("\r\nWlkata Robot " QINNEW_VERSION " based on Grbl " GRBL_VERSION "--Modified by Thor Zhou ['$' for help]\r\n"));
 }
 
 void report_robot_length_message()
@@ -475,7 +475,7 @@ void report_build_info(char *line)
 {
   printPgmString(PSTR("[" GRBL_VERSION "." GRBL_VERSION_BUILD ":"));
   printString(line);
-  printPgmString(PSTR("--ZDX(20200210)]\r\n"));
+  printPgmString(PSTR("--ZDX&LEAH(201306)]\r\n"));
 }
 
 
